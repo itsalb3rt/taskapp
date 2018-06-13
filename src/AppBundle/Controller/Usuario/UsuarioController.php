@@ -29,15 +29,14 @@ class UsuarioController extends Controller
         dump($usuario);
         die;
         */
-        //dump($usuarios);
-        //die;
-        //Select * from usuarios
         $usuarios = $this->getDoctrine()
             ->getRepository(Usuario::class)
             ->findAll();
         //Renderizando la vist
-        return $this->render("@App/Usuario/lista.html.twig",
-        ["usuarios"=>$usuarios]);
+        return $this->render("@App/Usuario/lista.html.twig",[
+            "usuarios"=>$usuarios,
+            'activar_opcion_menu' => 'usuario'
+        ]);
     }
     /**
      * @Route("/usuario/{idUsuario}", name="informacion_usuario")

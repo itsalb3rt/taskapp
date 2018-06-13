@@ -16,16 +16,7 @@ class DefaultController extends Controller
         // replace this example code with whatever you need
         return $this->render('default/index.html.twig', [
             'base_dir' => "Albert Hidalgo",
-        ]);
-    }
-    /**
-     * @Route("/hola", name="homepage_1")
-     */
-    public function index1Action(Request $request)
-    {
-        // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', [
-            'base_dir' => "Hola. Albert Hidalgo",
+            'activar_opcion_menu' => 'home'
         ]);
     }
 }
