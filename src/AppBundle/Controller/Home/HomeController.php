@@ -9,19 +9,15 @@
 namespace AppBundle\Controller\Home;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 
 class HomeController extends Controller
 {
     /**
      * @Route("/home", name="vista_home")
      */
-    public function indexHome(Request $request){
+    public function indexHome(){
 
         //Renderizando la vista
-        return $this->render("@App/Home/home.html.twig", [
-            'bienvenida' => "",
-            'activar_opcion_menu' => 'home'
-        ]);
+        return $this->render("@App/Home/home.html.twig");
     }
 }

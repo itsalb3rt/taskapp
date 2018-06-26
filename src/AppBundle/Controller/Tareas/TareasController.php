@@ -10,19 +10,15 @@ namespace AppBundle\Controller\Tareas;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 
 class TareasController extends Controller
 {
     /**
-     * @Route("/tareas", name="vista_tareas")
+     * @Route("/tareas", name="lista_tareas")
      */
-    public function indexHome(Request $request){
+    public function indexTareas(){
 
         //Renderizando la vista
-        return $this->render("@App/Tareas/index.html.twig", [
-            'tareas' => "",
-            'activar_opcion_menu' => 'tareas'
-        ]);
+        return $this->render("@App/Tareas/lista_tareas.html.twig");
     }
 }

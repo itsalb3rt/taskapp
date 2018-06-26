@@ -1,12 +1,46 @@
 {% extends 'base.html.twig' %}
-
+{% block titulo %}Lista de Usuarios{% endblock %}
+{% block menu_usuarios %}class="active"{% endblock %}
 {% block body %}
     <h1>Lista de Usuarios</h1>
-    <ul>
-        {% for usuario in usuarios %}
-        <li>{{ usuario.username }} - {{ usuario.nombre }}</li>
-        {% endfor %}
-    </ul>
+    <table class="tabla_usuarios table table-condensed table-hover table-responsive table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Username</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.nombre }}</td>
+                    <td>{{ usuario.username }}</td>
+                    <td>
+                        <a class="btn btn-primary btn-xs" href="{{ path('editar_usuario',{'id' : usuario.id}) }}"><span class="glyphicon glyphicon-edit"></span>&Tab;Editar</a>
+                        <button onclick="eliminar('{{ usuario.id }}')" class="btn btn-danger btn-xs" href="{{ path('eliminar_usuario',{'id' : usuario.id}) }}"><span class="glyphicon glyphicon-remove"></span>&Tab;eliminar</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        function eliminar($id){
+            $.ajax({
+                url:'/app_dev.php/rest/usuario/'+$id,
+                type:'DELETE',
+                success:function(response){
+                    console.log(response);
+                    location.reload();
+                },
+                error:function(err){
+                    console.log(err.responseText);
+                }
+            });
+        }
+    </script>
 {% endblock %}
 
 
