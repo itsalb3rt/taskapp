@@ -22,7 +22,7 @@ class UsuarioController extends Controller
 {
 
     /**
-     * @Route("/usuario", name="lista_usuarios")
+     * @Route("/usuario", name="lista_usuarios"),options={"expose"=true}
      */
         public function indexUsuario(){
 
@@ -39,7 +39,7 @@ class UsuarioController extends Controller
 
     /**
      *
-     * @Route("/usuario/{id}", name="editar_usuario")
+     * @Route("/usuario/{id}", name="editar_usuario"),options={"expose"=true}
      * @Method("GET")
      * @param Usuario $usuario
      * @return \Symfony\Component\HttpFoundation\Response
@@ -54,12 +54,10 @@ class UsuarioController extends Controller
         );
     }
     /**
-     *
-     * @Route("/rest/usuario/{id}", name="eliminar_usuario")
+     * @Route("/usuario/{id}", name="eliminar_usuario"),options={"expose"=true}
      * @Method("DELETE")
      * @param Usuario $usuario
      * @return Response
-     *
      */
     public function indexEliminarUsuario(Usuario $usuario){
         $entity_manager = $this->getDoctrine()->getManager();
@@ -72,7 +70,7 @@ class UsuarioController extends Controller
     //Restful API
 
     /**
-     * @Route("/rest/usuario/{id}", name="buscar_usuarios")
+     * @Route("/rest/usuario/{id}", name="buscar_usuarios"),options={"expose"=true}
      * @Method("GET")
      * @ParamConverter("usuario",class="AppBundle:Usuario")
      * @param Usuario $usuario
@@ -85,7 +83,7 @@ class UsuarioController extends Controller
     }
 
     /**
-     * @Route("/rest/usuario", name="guardar_usuario")
+     * @Route("/rest/usuario", name="guardar_usuario"),options={"expose"=true}
      * @Method("POST")
      * @param Request $request
      * @return null
@@ -108,7 +106,7 @@ class UsuarioController extends Controller
     }
 
     /**
-     * @Route("/rest/usuario/{id}", name="actualizar_usuario")
+     * @Route("/rest/usuario/{id}", name="actualizar_usuario"),options={"expose"=true}
      * @Method("PUT")
      * @param Request $request
      * @param Usuario $usuario

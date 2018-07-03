@@ -14,7 +14,7 @@
         </thead>
         <tbody>
             {% for usuario in usuarios %}
-                <tr>
+                <tr class="{{ usuario.id }}">
                     <td>{{ usuario.id }}</td>
                     <td>{{ usuario.nombre }}</td>
                     <td>{{ usuario.username }}</td>
@@ -29,11 +29,11 @@
     <script>
         function eliminar($id){
             $.ajax({
-                url:'/app_dev.php/rest/usuario/'+$id,
+                url: Routing.generate('eliminar_usuario', {id: $id}),
                 type:'DELETE',
                 success:function(response){
-                    console.log(response);
-                    location.reload();
+                   //Eliminando el tr del usuario eliminado
+                    $('.'+$id).remove();
                 },
                 error:function(err){
                     console.log(err.responseText);
