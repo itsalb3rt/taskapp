@@ -12,27 +12,32 @@
         <div class="form-group">
             <label for="username">Username</label>
             <input class="form-control" type="text" id="username" value="{{ usuario.username }}">
+            <label for="username">Email</label>
+            <input class="form-control" type="text" id="email" value="{{ usuario.email }}">
         </div>
             <button type="botton" onclick="guardar()" class="btn btn-primary"><span class="glyphicon glyphicon-saved"></span>&Tab;Guardar</button>
     </form>
     <script>
         function guardar(){
-            var $nombre = $("#nombre").val();
-            var $username = $("#username").val();
-            var $id = $("#id").val();
+            var nombre = $("#nombre").val();
+            var username = $("#username").val();
+            var email = $("#email").val();
+            var id = $("#id").val();
 
             var data = {
-                id:$id,
-                nombre:$nombre,
-                nombreusuario:$username
+                id:id,
+                nombre:nombre,
+                username:username,
+                email:email
             }
 
             $.ajax({
-                url:'/app_dev.php/rest/usuario/'+$id,
+                url:'/app_dev.php/rest/usuario/'+id,
                 type:'PUT',
                 data:JSON.stringify(data),
                 success:function(response){
-                    console.log(response)
+                    console.log(response);
+
                 },
                 error:function(err){
                     console.log(err.responseText);

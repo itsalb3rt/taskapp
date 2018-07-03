@@ -8,6 +8,7 @@
 
 namespace AppBundle\Controller\Usuario;
 use AppBundle\Entity\Usuario;
+use AppBundle\Form\UsuarioType;
 use AppBundle\Services\ModSerializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -22,7 +23,7 @@ class UsuarioController extends Controller
 {
 
     /**
-     * @Route("/usuario", name="lista_usuarios"),options={"expose"=true}
+     * @Route("/usuario", options={"expose"=true},name="lista_usuarios")
      */
         public function indexUsuario(){
 
@@ -39,7 +40,7 @@ class UsuarioController extends Controller
 
     /**
      *
-     * @Route("/usuario/{id}", name="editar_usuario"),options={"expose"=true}
+     * @Route("/usuario/{id}",options={"expose"=true}, name="editar_usuario")
      * @Method("GET")
      * @param Usuario $usuario
      * @return \Symfony\Component\HttpFoundation\Response
@@ -54,7 +55,7 @@ class UsuarioController extends Controller
         );
     }
     /**
-     * @Route("/usuario/{id}", name="eliminar_usuario"),options={"expose"=true}
+     * @Route("/rest/usuario/{id}", options={"expose"=true},name="eliminar_usuario")
      * @Method("DELETE")
      * @param Usuario $usuario
      * @return Response
@@ -70,7 +71,7 @@ class UsuarioController extends Controller
     //Restful API
 
     /**
-     * @Route("/rest/usuario/{id}", name="buscar_usuarios"),options={"expose"=true}
+     * @Route("/rest/usuario/{id}",options={"expose"=true}, name="buscar_usuarios")
      * @Method("GET")
      * @ParamConverter("usuario",class="AppBundle:Usuario")
      * @param Usuario $usuario
@@ -83,7 +84,7 @@ class UsuarioController extends Controller
     }
 
     /**
-     * @Route("/rest/usuario", name="guardar_usuario"),options={"expose"=true}
+     * @Route("/rest/usuario",options={"expose"=true}, name="guardar_usuario")
      * @Method("POST")
      * @param Request $request
      * @return null
@@ -93,20 +94,21 @@ class UsuarioController extends Controller
         $data = json_decode($data,true);
 
         $usuario = new Usuario();
-        $usuario->setNombre($data['nombre']);
-        $usuario->setUsername($data['nombreusuario']);
+        $form = $this->createForm(UsuarioType::class,$usuario);
+        $form->submit($data);
+            if($form->isValid()){
+            $entity_manager = $this->getDoctrine()->getManager();
+            $entity_manager->persist($usuario);
+            $entity_manager->flush();
 
-        $entity_manager = $this->getDoctrine()->getManager();
-        $entity_manager->persist($usuario);
-        $entity_manager->flush();
-
-        $jsonContent = $this->get('serializer')->serialize($usuario,'json');
-        $jsonContent = json_decode($jsonContent,true);
-        return new JsonResponse($jsonContent);
+            $jsonContent = $this->get('serializer')->serialize($usuario,'json');
+            $jsonContent = json_decode($jsonContent,true);
+            return new JsonResponse($jsonContent);
+        }
     }
 
     /**
-     * @Route("/rest/usuario/{id}", name="actualizar_usuario"),options={"expose"=true}
+     * @Route("/rest/usuario/{id}",options={"expose"=true}, name="actualizar_usuario")
      * @Method("PUT")
      * @param Request $request
      * @param Usuario $usuario
@@ -117,8 +119,8 @@ class UsuarioController extends Controller
         $data = $request->getContent();
         $data = json_decode($data,true);
 
-        $usuario->setNombre($data['nombre']);
-        $usuario->setUsername($data['nombreusuario']);
+        $form = $this->createForm(UsuarioType::class,$usuario);
+        $form->submit($data);
 
         $entity_manager = $this->getDoctrine()->getManager();
         $entity_manager->flush();

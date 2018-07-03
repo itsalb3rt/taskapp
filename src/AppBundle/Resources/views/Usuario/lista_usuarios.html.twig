@@ -27,13 +27,13 @@
         </tbody>
     </table>
     <script>
-        function eliminar($id){
+        function eliminar(id){
             $.ajax({
-                url: Routing.generate('eliminar_usuario', {id: $id}),
+                url:Routing.generate('eliminar_usuario', {id : id}),
                 type:'DELETE',
                 success:function(response){
                    //Eliminando el tr del usuario eliminado
-                    $('.'+$id).remove();
+                    $('.'+id).remove();
                 },
                 error:function(err){
                     console.log(err.responseText);
