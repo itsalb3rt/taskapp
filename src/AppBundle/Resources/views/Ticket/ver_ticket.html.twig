@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+{% block titulo %}Crear tarea{% endblock %}
+{% block menu_tareas %}class="active"{% endblock %}
+{% block body %}
+    <div class="alinear_izquierda" style="margin: auto;">
+    <span class="datos_ticket" data-id_ticket="{{ ticket.id }}" data-id_solicitante="{{ ticket.usuarioId }}" data-id_asignado="{{ ticket.usuarioAsignadoId }}" data-id_usuario_nota="43" hidden></span>
+        <h1>Asignacion # {{ ticket.id }} </h1>
+        <span class="float_right"><strong>{{ ticket.fechaCreado|date("m/d/Y") }}</strong></span>
+        {% if ticket.estado == "PENDIENTE" %}
+            <button class="btn btn-primary boton_iniciar_tarea">INICIAR</button>
+        {% endif %}
+        <div>
+            <div>
+                Solicitado por: <strong>{{ ticket.usuarioId }}</strong>
+            </div>
+            <div>
+                Descripcion: {{ ticket.descripcion }}
+            </div>
+        </div>
+        <div class="contenedor_notas">
+            <h1>Notas</h1>
+            <button class="btn btn-success float_right boton_agregar_nota">Agregar nota</button>
+            <div class="notas">
+                <table class="table table-condensed table-hover table-responsive table-striped">
+                    <thead>
+                        <th>Fecha</th>
+                        <th>Nota</th>
+                        <th>Usuario</th>
+                    </thead>
+                    <tbody>
+                    {% for nota in notas %}
+                        <tr>
+                            <td>{{ nota.fecha|date("m/d/Y") }}</td>
+                            <td>{{ nota.comentario }}</td>
+                            <td>{{ nota.nombre }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal_agregar_nota centrar_contenido">
+            <form action="#" method="POST" class="form_agregar_nota">
+                <h1><label for="nota">Nota</label></h1>
+                <textarea class="nota" name="nota" id="nota" cols="30" rows="5" style="width: 100%" required></textarea>
+                <div>
+                    <button type="submit" class="btn btn-primary">Agregar nota</button>
+                    <button type="reset" class="btn btn-danger" onclick="$('.modal_agregar_nota').iziModal('close');">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    <script>
+        $(document).on('click','.boton_iniciar_tarea',function(){
+            var ticket_id = $('.datos_ticket').data('id_ticket');
+            iniciar_tarea(ticket_id);
+        });
+        /**
+         * Funcion para cambiar estado de ticket a EN_PROCESO
+         **/
+        function iniciar_tarea(ticket_id){
+
+            $.ajax({
+                url:Routing.generate('iniciar_tarea',{id:ticket_id}),
+                type:'PUT',
+                success:function(response){
+                    $('.boton_iniciar_tarea').prop('disabled','disabled');
+                    desplegar_notificacion('Tarea iniciada');
+                },
+                error:function(err){
+                    console.log(err.responseText);
+                }
+            });
+        }
+
+        /**
+         * modal agregar nota
+         **/
+        $(document).on('click', '.boton_agregar_nota', function (event) {
+            event.preventDefault();
+            $('.modal_agregar_nota').iziModal('open');
+        });
+
+        $(".modal_agregar_nota").iziModal(modal_data('Agregar nota','','#03A9F4'));
+
+        $(document).on('submit','.form_agregar_nota',function(e){
+           e.preventDefault();
+            agregar_nota();
+        });
+
+        function agregar_nota(){
+            //Algunas variables
+            var id_ticket = $('.datos_ticket').data('id_ticket');
+            var id_usuario_nota = $('.datos_ticket').data('id_solicitante');
+            var nota = $('.form_agregar_nota .nota').val();
+
+
+            $.ajax({
+                url:Routing.generate('guardar_nota'),
+                type:'POST',
+                data:JSON.stringify({usuarioId:id_usuario_nota,comentario:nota,ticketId:id_ticket}),
+                success:function(response){
+                    desplegar_notificacion('Nota agregada');
+                    $('.modal_agregar_nota').iziModal('close');
+                    console.log(response);
+                },
+                error:function(err){
+                    console.log(err.responseText);
+                }
+            });
+        }
+
+    </script>
+{% endblock %}

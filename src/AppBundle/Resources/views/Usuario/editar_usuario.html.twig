@@ -12,8 +12,6 @@
         <div class="form-group">
             <label for="username">Username</label>
             <input class="form-control" type="text" id="username" value="{{ usuario.username }}">
-            <label for="username">Email</label>
-            <input class="form-control" type="text" id="email" value="{{ usuario.email }}">
         </div>
             <button type="botton" onclick="guardar()" class="btn btn-primary"><span class="glyphicon glyphicon-saved"></span>&Tab;Guardar</button>
     </form>
@@ -32,11 +30,12 @@
             }
 
             $.ajax({
-                url:'/app_dev.php/rest/usuario/'+id,
+                url:Routing.generate('actualizar_usuario',{id:id}),
                 type:'PUT',
                 data:JSON.stringify(data),
                 success:function(response){
                     console.log(response);
+                    desplegar_notificacion('Usuario modificado');
 
                 },
                 error:function(err){

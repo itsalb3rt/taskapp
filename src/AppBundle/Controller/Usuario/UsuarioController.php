@@ -23,6 +23,25 @@ class UsuarioController extends Controller
 {
 
     /**
+     * @Route("/login", name="login")
+     */
+    public function loginAction(Request $request) {
+
+        dump("error");
+        die();
+        //Llamamos al servicio de autenticacion
+        $authenticationUtils = $this->get('security.authentication_utils');
+
+        // conseguir el error del login si falla
+        $error = $authenticationUtils->getLastAuthenticationError();
+
+        // ultimo nombre de usuario que se ha intentado identificar
+        $lastUsername = $authenticationUtils->getLastUsername();
+
+        return $this->render(
+            'AppBundle:Usuario:login.html.twig',array('error'=>$error,'last_username'=>$lastUsername));
+    }
+    /**
      * @Route("/usuario", options={"expose"=true},name="lista_usuarios")
      */
         public function indexUsuario(){
@@ -87,7 +106,7 @@ class UsuarioController extends Controller
      * @Route("/rest/usuario",options={"expose"=true}, name="guardar_usuario")
      * @Method("POST")
      * @param Request $request
-     * @return null
+     * @return Response
      */
     public function guardarUsuario(Request $request){
         $data = $request->getContent();
@@ -97,14 +116,14 @@ class UsuarioController extends Controller
         $form = $this->createForm(UsuarioType::class,$usuario);
         $form->submit($data);
             if($form->isValid()){
-            $entity_manager = $this->getDoctrine()->getManager();
-            $entity_manager->persist($usuario);
-            $entity_manager->flush();
+                $entity_manager = $this->getDoctrine()->getManager();
+                $entity_manager->persist($usuario);
+                $entity_manager->flush();
 
-            $jsonContent = $this->get('serializer')->serialize($usuario,'json');
-            $jsonContent = json_decode($jsonContent,true);
-            return new JsonResponse($jsonContent);
-        }
+                $jsonContent = $this->get('serializer')->serialize($usuario,'json');
+                $jsonContent = json_decode($jsonContent,true);
+                return new JsonResponse($jsonContent);
+            }
     }
 
     /**
@@ -130,4 +149,6 @@ class UsuarioController extends Controller
 
         return new JsonResponse($jsonContent);
     }
+
+
 }

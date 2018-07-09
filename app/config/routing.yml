@@ -5,3 +5,12 @@ app:
 # app/config/routing.yml
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
+#Login
+login:
+    path:     /login
+    defaults: { _controller: AppBundle:Usuario:login }
+
+login_check:
+    path: /login_check
+logout:
+    path: /logout

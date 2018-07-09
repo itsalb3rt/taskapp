@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+{% block titulo %}Crear tarea{% endblock %}
+{% block menu_tareas %}class="active"{% endblock %}
+{% block body %}
+    <div class="alinear_izquierda" style="width: 50%;margin: auto;">
+        <h1>Nueva tarea</h1>
+        <form action="#" method="POST" id="form_crear_ticket">
+            <div class="float_right botones_accion" style="margin-top: -44px;">
+                    <button type="reset" class="btn btn-danger cancelar_ticket">Cancelar</button>
+                    <button type="submit" class="btn btn-primary guardar_ticket">Guardar</button>
+                <input type="text" value="{{ 43 }}" id="usuario_id" hidden>
+            </div>
+            <div>
+                <label for="asignar">Asignar A:</label>
+                <select name="asignar" id="asignar" class="form-control form-control-lg" required>
+                    <option value="">Seleccione un usuario técnico</option>
+                    {% for usuario in usuarios %}
+                        {% if usuario.tipoUsuario == "tecnico" %}
+                            <option value="{{ usuario.id }}">{{ usuario.nombre }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="descripcion_tarea">Descripcion</label>
+                <textarea class="form-control" name="descripcion_tarea" id="descripcion_tarea" rows="3" required></textarea>
+            </div>
+            <div class="notificacion_tarea">
+
+            </div>
+        </div>
+    </form>
+    <script>
+        $(document).on('submit','#form_crear_ticket',function(e){
+            e.preventDefault();
+            //Desactivando el boton de crear ticket para evitar duplicidad de tarea
+            $('.guardar_ticket').prop('disabled','disabled');
+            crear_ticket();
+        });
+        function crear_ticket(){
+
+            var asignado = $('#asignar').val();
+            var usuario_id = $('#usuario_id').val();
+            var descripcion = $('#descripcion_tarea').val();
+
+            $.ajax({
+                url:Routing.generate('guardar_ticket'),
+                type:'POST',
+                data:JSON.stringify({descripcion: descripcion, usuarioId: usuario_id, usuarioAsignadoId: asignado}),
+                success:function(response){
+                    try{
+                    //Desplegando notificacion
+                        desplegar_notificacion('Ticket #' +response.id + ' creado');
+                        $('.notificacion_tarea').append("<div class='success_ticket'>Ticket #" + response.id + " creado</div>");
+                    }catch (e) {
+                        console.log(e.message());
+                    }
+                },
+                error:function(err){
+                    desplegar_notificacion('Error al crear el ticket','error');
+                    console.log(err.responseText);
+                }
+            });
+        }
+    </script>
+{% endblock %}

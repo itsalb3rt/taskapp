@@ -2,16 +2,36 @@
 {% block titulo %}Lista de Tareas{% endblock %}
 {% block menu_tareas %}class="active"{% endblock %}
 {% block body %}
-    <h1>Tareas</h1>
-    <div class="list-group">
-        <button type="button" class="list-group-item list-group-item-action active">
-            Cras justo odio
-        </button>
-        <button type="button" class="list-group-item list-group-item-action">Dapibus ac facilisis in</button>
-        <button type="button" class="list-group-item list-group-item-action">Morbi leo risus</button>
-        <button type="button" class="list-group-item list-group-item-action">Porta ac consectetur ac</button>
-        <button type="button" class="list-group-item list-group-item-action" disabled>Vestibulum at eros</button>
-    </div>
+    <h1 class="alinear_izquierda">MIS ASIGNACIONES</h1>
+    <table class="table table-condensed table-hover table-responsive table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ticket in tickets  %}
+            <tr>
+                <td>{{ ticket.id }}</td>
+                <td>{{ ticket.fechaCreado|date("m/d/Y") }}</td>
+                <td>{{ ticket.nombre }}</td>
+                <td>{{ ticket.estado }}</td>
+                <td>
+                    <a href="{{ 'ver_ticket/' }}{{ticket.id}}" class="btn btn-success">VER</a>
+                    {% if ticket.estado == "PENDIENTE" %}
+                        <a href="#" class="btn btn-primary">INICIAR</a>
+                    {% elseif ticket.estado == "EN_PROCESO"  %}
+                        <a href="#" class="btn btn-warning">TERMINAR</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
 
 

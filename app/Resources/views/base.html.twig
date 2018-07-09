@@ -10,10 +10,18 @@
     <link rel="icon" href="{{ asset('assets/images/favicon.ico')}}">
 
     <title>TaskApp - {% block titulo %}{% endblock %}</title>
+    <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+    <script>window.jQuery || document.write('<script src="{{ asset('assets/js/jquery.min.js') }}"><\/script>')</script>
     <!-- Estilos personalizados -->
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <!-- Izi modal -->
+    <link href="{{ asset('assets/css/iziModal.min.css') }}" rel="stylesheet">
     <!-- Bootstrap core CSS -->
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <!-- Notificaciones -->
+    <script src="{{ asset('assets/js/notifIt.min.js') }}"></script>
+    <script src="{{ asset('assets/js/notifit_custom.js') }}"></script>
+    <link href="{{ asset('assets/css/notifIt.css') }}" rel="stylesheet">
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="{{ asset('assets/css/ie10-viewport-bug-workaround.css') }}" rel="stylesheet">
@@ -27,11 +35,15 @@
 
     <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <!--  Izi modal-->
+    <script src="{{ asset('assets/js/iziModal.min.js') }}"></script>
+    <script src="{{ asset('assets/js/modals/modals_mod.js') }}"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="{{ asset('assets/js/html5shiv.min.js') }}"></script>
     <script src="{{ asset('assets/js/respond.min.js') }}"></script>
+
     <![endif]-->
 </head>
 
@@ -71,10 +83,12 @@
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="{{ asset('assets/js/jquery.min.js') }}"></script>
-<script>window.jQuery || document.write('<script src="{{ asset('assets/js/jquery.min.js') }}"><\/script>')</script>
+
 <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="{{ asset('assets/js/ie10-viewport-bug-workaround.js') }}"></script>
+
+<!-- Modals -->
+<script src="{{ asset('assets/js/modals/modal.agregar_usaurio.js') }}"></script>
 </body>
 </html>

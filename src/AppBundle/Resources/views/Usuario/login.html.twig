@@ -1,0 +1,24 @@
+{% extends '../base.html.twig' %}
+{% block primary %}
+    {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
+
+        {{app.usuario.nombre}} {{app.usuario.username}}  {{ app.usuario.tipo_usuario }}
+
+    {%endif%}
+
+    <form action="{{ path('login_check') }}" method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="_username" value="{{ last_username }}" />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="_password" />
+
+        {#
+            Si quieres controlar la url a la que el usuario
+            es redirigido al enviar correctamente el formulario
+            <input type="hidden" name="_target_path" value="/account" />
+        #}
+
+        <button type="submit">login</button>
+    </form>
+{% endblock %}
