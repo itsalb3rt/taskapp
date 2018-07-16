@@ -11,21 +11,5 @@ use Doctrine\ORM\EntityRepository;
  */
 class NotaRepository extends EntityRepository
 {
-    /**
-     * @param $id
-     *
-     * @return array
-     */
-    public function buscar_notas_por_id($id){
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('u.id','u.nombre','n.comentario','n.fecha','n.usuarioId')
-            ->from('AppBundle:Nota','n')
-            ->innerJoin('AppBundle:Usuario','u','WITH','n.usuarioId = u.id')
-            ->where('n.ticketId = :nid')
-            ->orderBy('n.fecha','ASC')
-            ->setParameter("nid",$id)
-            ->getQuery()->execute();
 
-    }
 }

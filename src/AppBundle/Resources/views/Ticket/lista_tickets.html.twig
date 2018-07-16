@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% block titulo %}Lista de Tareas{% endblock %}
+{% block menu_tickets %}class="active"{% endblock %}
+{% block body %}
+    <h1 class="alinear_izquierda">LISTA TODOS LOS TICKETS</h1>
+    <table class="table table-condensed table-hover table-responsive table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ticket in tickets  %}
+            <tr>
+                <td>{{ ticket.id }}</td>
+                <td>{{ ticket.fechaCreado|date("m/d/Y") }}</td>
+                <td>{{ ticket.usuario }}</td>
+                <td>{{ ticket.estado }}</td>
+                <td>
+                    <a href="{{ 'ver_ticket/' }}{{ticket.id}}" class="btn btn-success"><span class="glyphicon glyphicon-eye-open"></span>&Tab;VER</a>
+                    {% if ticket.estado == "PENDIENTE" %}
+                        <a href="#" class="btn btn-primary">INICIAR</a>
+                    {% elseif ticket.estado == "EN_PROCESO"  %}
+                        <a href="#" class="btn btn-warning">TERMINAR</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+

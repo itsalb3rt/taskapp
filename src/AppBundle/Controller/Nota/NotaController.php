@@ -20,6 +20,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
 class NotaController extends Controller
 {
@@ -44,9 +47,17 @@ class NotaController extends Controller
         $entity_manager->persist($nota);
         $entity_manager->flush();
 
-        $jsonContent = $this->get('serializer')->serialize($nota,'json');
-        $jsonContent = json_decode($jsonContent,true);
-        return new JsonResponse($jsonContent);
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizer = new ObjectNormalizer();
+        $normalizer->setCircularReferenceLimit(1);
+        // Add Circular reference handler
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+        $normalizers = array($normalizer);
+        $serializer = new Serializer($normalizers, $encoders);
+        $json =  $serializer->serialize($nota,'json');
+        return new JsonResponse($json);
     }
 
 }

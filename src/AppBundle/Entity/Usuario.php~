@@ -238,28 +238,5 @@ class Usuario implements UserInterface, \Serializable
     {
         // TODO: Implement eraseCredentials() method.
     }
-
-    /**
-     * Add ticket
-     *
-     * @param \AppBundle\Entity\Ticket $ticket
-     *
-     * @return Usuario
-     */
-    public function addTicket(\AppBundle\Entity\Ticket $ticket)
-    {
-        $this->tickets[] = $ticket;
-
-        return $this;
-    }
-
-    /**
-     * Remove ticket
-     *
-     * @param \AppBundle\Entity\Ticket $ticket
-     */
-    public function removeTicket(\AppBundle\Entity\Ticket $ticket)
-    {
-        $this->tickets->removeElement($ticket);
-    }
 }
+

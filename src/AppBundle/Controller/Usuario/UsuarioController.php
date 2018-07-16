@@ -7,6 +7,7 @@
  */
 
 namespace AppBundle\Controller\Usuario;
+
 use AppBundle\Entity\Usuario;
 use AppBundle\Form\UsuarioType;
 use AppBundle\Services\ModSerializer;
@@ -18,29 +19,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UsuarioController extends Controller
 {
 
-    /**
-     * @Route("/login", name="login")
-     */
-    public function loginAction(Request $request) {
 
-        dump("error");
-        die();
-        //Llamamos al servicio de autenticacion
-        $authenticationUtils = $this->get('security.authentication_utils');
-
-        // conseguir el error del login si falla
-        $error = $authenticationUtils->getLastAuthenticationError();
-
-        // ultimo nombre de usuario que se ha intentado identificar
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render(
-            'AppBundle:Usuario:login.html.twig',array('error'=>$error,'last_username'=>$lastUsername));
-    }
     /**
      * @Route("/usuario", options={"expose"=true},name="lista_usuarios")
      */
@@ -108,22 +93,26 @@ class UsuarioController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function guardarUsuario(Request $request){
+    public function guardarUsuario(Request $request,UserPasswordEncoderInterface $encoder){
         $data = $request->getContent();
         $data = json_decode($data,true);
 
         $usuario = new Usuario();
+
+
         $form = $this->createForm(UsuarioType::class,$usuario);
         $form->submit($data);
-            if($form->isValid()){
+                //cifrando clave
+                $passcifrado = $encoder->encodePassword($usuario,$usuario->getContrasena());
+                $usuario->setContrasena($passcifrado);
                 $entity_manager = $this->getDoctrine()->getManager();
                 $entity_manager->persist($usuario);
                 $entity_manager->flush();
 
                 $jsonContent = $this->get('serializer')->serialize($usuario,'json');
                 $jsonContent = json_decode($jsonContent,true);
+
                 return new JsonResponse($jsonContent);
-            }
     }
 
     /**
@@ -144,11 +133,44 @@ class UsuarioController extends Controller
         $entity_manager = $this->getDoctrine()->getManager();
         $entity_manager->flush();
 
-        $jsonContent = $this->get('serializer')->serialize($usuario,'json');
+        $jsonContent = $this->get('serializer')->serialize($data,'json');
         $jsonContent = json_decode($jsonContent,true);
 
         return new JsonResponse($jsonContent);
     }
 
+    /**
+     * @Route("/login", name="login")
+     * @param Request $request
+     * @param AuthenticationUtils $authenticationUtils
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function loginAction(Request $request,AuthenticationUtils $authenticationUtils) {
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
+
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
+
+        return $this->render(
+            '@App/Usuario/login.html.twig',
+            [
+                'error'=>$error,
+                'last_username'=>$lastUsername
+            ]);
+    }
+
+    /**
+     * @Route("/login_check", name="login_check")
+     */
+    public function loginCheckAction(){
+
+    }
+    /**
+     * @Route("/logout",name="logout")
+     */
+    public function logoutAction(){
+
+    }
 
 }

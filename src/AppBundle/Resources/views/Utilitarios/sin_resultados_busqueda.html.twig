@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% block titulo %}Sin resultados{% endblock %}
+{% block menu_tareas %}class="active"{% endblock %}
+{% block body %}
+<div class="centrar_contenido">
+    <div class="busqueda_sin_resultados float_right">
+        <span class="glyphicon glyphicon-sunglasses"></span>
+    </div>
+    <h2 class="info_resultado_busqueda">{{ mensaje }}</h2>
+    <hr>
+    <div>
+        <div class="info_resultado_busqueda">
+            <strong>Esto podría deberse a: </strong>
+            <ul>
+                <li>El número de ticket podría estar mal escrito</li>
+                <li>El ticket podría no existir (¿)</li>
+                <li>Hay un troll en la sala</li>
+            </ul>
+        </div>
+    </div>
+    <hr>
+</div>
+{% endblock %}

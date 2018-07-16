@@ -1,24 +1,93 @@
-{% extends '../base.html.twig' %}
-{% block primary %}
-    {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
+{% extends 'base.html.twig' %}
+{% block titulo %}Login{% endblock %}
+{% block menu_home %}class="active"{% endblock %}
+{% block body %}
+        <h1>Login</h1>
+        {% if error %}
+            <div class='red'>
+                {{ error.messageKey|trans(error.messageData,'security') }}
+            </div>
+            <br>
+        {% endif %}
 
-        {{app.usuario.nombre}} {{app.usuario.username}}  {{ app.usuario.tipo_usuario }}
+    <form class="form-signin centrar_contenido formulario_inicio_sesion" style="width: 40%;" method='post' action='{{ path('login') }}'>
 
-    {%endif%}
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+            <input type="text" id="inputName" name='_username' value="{{ last_username }}" class="form-control" placeholder="Nombre de usuario" required autofocus>
+        </div>
 
-    <form action="{{ path('login_check') }}" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}" />
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="_password" />
-
-        {#
-            Si quieres controlar la url a la que el usuario
-            es redirigido al enviar correctamente el formulario
-            <input type="hidden" name="_target_path" value="/account" />
-        #}
-
-        <button type="submit">login</button>
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+            <input type="password" id="inputPassword" name="_password" class="form-control" placeholder="Contraseña" required>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" value="remember-me" required checked>Recordar
+            </label>
+        </div>
+        <hr>
+        <button class="btn btn-lg btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-log-in"></span>&Tab;Login</button>
+        <input type="hidden" name="_target_path" value="/home">
     </form>
+    <br>
+        <div style="width: 40%" class="centrar_contenido">
+            <span class="btn btn-success crear_usuario btn-lg btn-block"><span class="glyphicon glyphicon-edit"></span>&Tab;Registrarse</span>
+        </div>
+    <div class="modal_crear_usuario centrar_contenido formulario">
+        <form action="#" method="POST" class="formulario_crear_usuario">
+            <div class="input">
+                <label for="nombre">Nombre completo <span class="text-muted"><small>(Obligatorio)</small></span></label>
+                <input type="text" name="nombre" class="nombre" id="nombre" placeholder="Albert Eduardo Hidalgo Taveras" autocomplete="off" required>
+            </div>
+            <div class="input">
+                <label for="email">Email <span class="text-muted"><small>(Obligatorio)</small></span></label></label>
+                <input type="email" name="username" class="email" id="email" placeholder="alhidalgo@edenorte.com.do" autocomplete="off" required>
+            </div>
+            <div class="input">
+                <label for="username">Contraseña <span class="text-muted"><small>(Obligatorio)</small></span></label></label>
+                <input type="password" name="contrasena" class="contrasena" id="contrasena" placeholder="**********" autocomplete="off" required>
+            </div>
+            <div class="input" style="text-align: left; display: inline-block;">
+                <div><label>Tipo de Usuario</label></div>
+                <input type="radio" name="tipo_usuario" value="NORMAL" class="tipo_usuario" id="tipo_normal" checked>
+                <label for="tipo_normal">NORMAL</label>
+                <input type="radio" name="tipo_usuario" value="TECNICO" class="tipo_usuario" id="tipo_tecnico">
+                <label for="tipo_tecnico">TECNICO</label>
+            </div>
+            <div class="input">
+                <input type="submit" name="crear_usuario" class="submit_crear_usuario btn btn-primary" value="Crear Usuario">
+            </div>
+        </form>
+    </div>
+    <script>
+        $(document).on('submit','.formulario_crear_usuario',function(e){
+            e.preventDefault();
+            crear_usuario();
+        });
+        function crear_usuario(){
+
+            var nombre = $('.nombre').val();
+            var email = $('.email').val();
+            var contrasena = $('.contrasena').val();
+            var tipo_usuario = $('input[name="tipo_usuario"]:checked').val();
+
+            $.ajax({
+                url:Routing.generate('guardar_usuario'),
+                type:'POST',
+                data:JSON.stringify({nombre: nombre, username: email, contrasena: contrasena,tipo_usuario: tipo_usuario}),
+                success:function(response){
+                    //Cerrando el modal cuando la respuesta sea valida
+                    $('.modal_crear_usuario').iziModal('close');
+                    //Desplegando notificacion
+                    desplegar_notificacion('Usuario creado');
+                    console.log(response);
+                },
+                error:function(err){
+                    desplegar_notificacion('Error al crear el usuario, es probable que ya exista','error');
+                    console.log(err.responseText);
+                }
+            });
+        }
+    </script>
 {% endblock %}

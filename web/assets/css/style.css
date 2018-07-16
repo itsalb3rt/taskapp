@@ -37,3 +37,51 @@
      border-radius: 4px;
      text-align: center;
  }
+ .mas_opciones_menu{
+     display: inline-flex;
+     margin: 8px 10px;
+ }
+ .mas_opciones_menu > div{
+     margin: auto 10px;
+ }
+
+ .mas_opciones_menu .barra_buqueda input[type='search']{
+     padding: 4px;
+     border: 1px solid rgba(255, 0, 0, 0.25);
+     border-radius: 4px;
+ }
+
+ .busqueda_sin_resultados .glyphicon{
+     font-size: 200px;
+     background-image: linear-gradient(to right top, #03a9f4, #0094e8, #197ed9, #2f68c8, #3f51b5);
+     color: white;
+     padding: 20px;
+     border-radius: 50%;
+     opacity: 0.7;
+     transform: rotate(20deg);
+ }
+ .info_resultado_busqueda{
+     text-align: left;
+ }
+
+ .formulario_inicio_sesion > div {
+     margin: 15px auto;
+ }
+
+ .usuario_logueado .nombre_usuario{
+     color: black;
+     background-color: white;
+     padding: 7px 10px 5px 10px;
+     margin-left: -4px;
+     border-radius: 0px 4px 4px 0px;
+     font-weight: bold;
+ }
+.usuario_logueado .glyphicon-user{
+    background-color: #337ab7;
+    color: white;
+    padding: 7px;
+    border-radius: 4px 0px 0px 4px;
+}
+.usuario_logueado:hover{
+    cursor: pointer;
+}

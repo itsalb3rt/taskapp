@@ -13,7 +13,7 @@ class NotaType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('ticketId')->add('usuarioId')->add('comentario');
+        $builder->add('ticket')->add('usuarioId')->add('comentario');
     }/**
      * {@inheritdoc}
      */

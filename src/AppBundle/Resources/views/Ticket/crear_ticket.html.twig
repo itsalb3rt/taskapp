@@ -6,16 +6,16 @@
         <h1>Nueva tarea</h1>
         <form action="#" method="POST" id="form_crear_ticket">
             <div class="float_right botones_accion" style="margin-top: -44px;">
-                    <button type="reset" class="btn btn-danger cancelar_ticket">Cancelar</button>
-                    <button type="submit" class="btn btn-primary guardar_ticket">Guardar</button>
-                <input type="text" value="{{ 43 }}" id="usuario_id" hidden>
+                    <button type="reset" class="btn btn-danger cancelar_ticket"><span class="glyphicon glyphicon-remove"></span>&Tab;Cancelar</button>
+                    <button type="submit" class="btn btn-primary guardar_ticket"><span class="glyphicon glyphicon-floppy-save"></span>&Tab;Guardar</button>
+                <input type="text" value="{{ app.user.id }}" id="usuario_id" hidden>
             </div>
             <div>
                 <label for="asignar">Asignar A:</label>
                 <select name="asignar" id="asignar" class="form-control form-control-lg" required>
                     <option value="">Seleccione un usuario técnico</option>
                     {% for usuario in usuarios %}
-                        {% if usuario.tipoUsuario == "tecnico" %}
+                        {% if usuario.tipoUsuario == "TECNICO" %}
                             <option value="{{ usuario.id }}">{{ usuario.nombre }}</option>
                         {% endif %}
                     {% endfor %}
@@ -46,7 +46,7 @@
             $.ajax({
                 url:Routing.generate('guardar_ticket'),
                 type:'POST',
-                data:JSON.stringify({descripcion: descripcion, usuarioId: usuario_id, usuarioAsignadoId: asignado}),
+                data:JSON.stringify({descripcion: descripcion, usuario: usuario_id, usuarioAsignadoId: asignado}),
                 success:function(response){
                     try{
                     //Desplegando notificacion

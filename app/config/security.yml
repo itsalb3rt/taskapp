@@ -2,35 +2,25 @@
 # https://symfony.com/doc/current/security.html
 security:
     encoders:
-            AppBundle\Entity\Usuario:
-                algorithm: bcrypt
-                cost: 4
+        AppBundle\Entity\Usuario:
+            algorithm: bcrypt
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-        user_db_provider:
+        my_db_provider:
             entity:
-                class: AppBundle:Usuario
+                class:  AppBundle:Usuario
                 property: username
 
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-
         main:
             anonymous: ~
-            provider: user_db_provider
             form_login:
-              login_path: /login
-              check_path: /login_check
+                login_path: /login
+                check_path: /login
             logout:
-              path: logout
-              target: /
-            # activate different ways to authenticate
+                path: logout
+                target: /login
 
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-            #http_basic: ~
-
-            # https://symfony.com/doc/current/security/form_login_setup.html
-            #form_login: ~
+    access_control:
+        - { path: ^/login,  roles:  IS_AUTHENTICATED_ANONYMOUSLY }

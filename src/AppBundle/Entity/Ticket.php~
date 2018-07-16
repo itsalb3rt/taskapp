@@ -207,38 +207,5 @@ class Ticket
     }
 
 
-
-    /**
-     * Add nota
-     *
-     * @param \AppBundle\Entity\Nota $nota
-     *
-     * @return Ticket
-     */
-    public function addNota(\AppBundle\Entity\Nota $nota)
-    {
-        $this->notas[] = $nota;
-
-        return $this;
-    }
-
-    /**
-     * Remove nota
-     *
-     * @param \AppBundle\Entity\Nota $nota
-     */
-    public function removeNota(\AppBundle\Entity\Nota $nota)
-    {
-        $this->notas->removeElement($nota);
-    }
-
-    /**
-     * Get notas
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getNotas()
-    {
-        return $this->notas;
-    }
 }
+

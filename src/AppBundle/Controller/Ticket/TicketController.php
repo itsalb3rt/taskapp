@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -69,13 +70,13 @@ class TicketController extends Controller
      *
      * @return JsonResponse
      */
-    public function actualizarUsuario($id){
+    public function iniciar_tarea($id){
 
         $fecha = new \DateTime('now', (new \DateTimeZone('America/Santiago')));
         //Enviando actualizacion
         $entityManager = $this->getDoctrine()->getManager();
         $ticket = $entityManager->getRepository(Ticket::class)->find($id);
-        $ticket->setFecha($fecha);
+        $ticket->setFechaCompletado($fecha);
         $ticket->setEstado("EN_PROCESO");
         $entityManager->flush();
         $data = array('id'=>$id);
@@ -92,16 +93,100 @@ class TicketController extends Controller
      *
      */
     public function verTicket(Ticket $ticket){
-
-        $notas = $this->getDoctrine()
-            ->getRepository(Nota::class)
-            ->buscar_notas_por_id($ticket->getId());
-
+        $notas = $ticket->getNotas();
         return $this->render("@App/Ticket/ver_ticket.html.twig",
             [
                 "ticket"=>$ticket,
                 "notas"=>$notas
             ]
         );
+    }
+    /**
+     * @Route("/tickets", name="lista_tickets")
+     */
+    public function todosTickets(){
+        $tickets = $this->getDoctrine()
+            ->getRepository(Ticket::class)
+            ->findBy([],
+                ['fechaCreado'=>'DESC']);
+        //Renderizando la vista
+        return $this->render("@App/Ticket/lista_tickets.html.twig",
+            [
+                "tickets"=>$tickets
+            ]);
+    }
+    /**
+     * @Route("/mis_asignaciones", name="mis_asignaciones")
+     */
+    public function misAsignaciones(){
+        $usuario =
+        $tickets = $this->getDoctrine()
+            ->getRepository(Ticket::class)
+            ->findBy(
+                ['usuarioAsignadoId' => $this->getUser()->getId()],
+                ['fechaCreado'=>'DESC']
+            );
+        //Renderizando la vista
+        return $this->render("@App/Ticket/mis_asignaciones.html.twig",
+            [
+                "tickets"=>$tickets
+            ]);
+    }
+    /**
+     * @Route("/mis_tickets", name="mis_tickets")
+     */
+    public function misTickets(){
+        $usuario =
+        $tickets = $this->getDoctrine()
+            ->getRepository(Ticket::class)
+            ->findBy(
+                ['usuario' => $this->getUser()->getId()],
+                ['fechaCreado'=>'DESC']
+            );
+        //Renderizando la vista
+        return $this->render("@App/Ticket/mis_tickets.html.twig",
+            [
+                "tickets"=>$tickets
+            ]);
+    }
+
+    /**
+     * @Route("/resultado_busqueda/{ticket_id}",options={"expose"=true},name="resultado_busqueda"),requirements={"ticket"="\d+"})
+     * @Method 'GET'
+     *
+     * @param int $ticket_id
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function consulta_ticket_id($ticket_id = 1){
+        $ticket_id = $_GET['ticket'];
+        $mensaje_busqueda = 'Oops! no se encontro nada: ' ;
+        //Verificand si el usuario ha introducido un numero
+        if(is_numeric($ticket_id)){
+            $ticket = $this->getDoctrine()
+                ->getRepository(Ticket::class)
+                ->findBy(array('id'=>$ticket_id));
+            //Verificando que existe resultado de la consulta
+            if(isset($ticket[0])){
+                return $this->render("@App/Ticket/ver_ticket.html.twig",
+                    [
+                        "ticket"=>$ticket[0]
+                    ]
+                );
+            }else{
+                return $this->render("@App/Utilitarios/sin_resultados_busqueda.html.twig",
+                    [
+                        "mensaje"=> $mensaje_busqueda . $ticket_id
+                    ]
+                );
+            }
+
+        }else{
+            return $this->render("@App/Utilitarios/sin_resultados_busqueda.html.twig",
+                [
+                    "mensaje"=> $mensaje_busqueda . $ticket_id
+                ]
+            );
+        }
+
     }
 }
