@@ -52,16 +52,22 @@ class Usuario implements UserInterface, \Serializable
      * @ORM\Column(name="tipo_usuario", type="string", length=25, unique=false)
      */
     private $tipo_usuario;
+
+    public function __construct()
+    {
+        $this->tickets = new ArrayCollection();
+        $this->notas = new ArrayCollection();
+    }
     /**
      * @var $tickets
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Ticket", mappedBy="usuario")
      */
     private $tickets;
-
-    public function __construct()
-    {
-        $this->tickets = new ArrayCollection();
-    }
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Nota", mappedBy="usuarioId")
+     */
+    private $notas;
 
     /**
      * @return mixed
@@ -261,5 +267,39 @@ class Usuario implements UserInterface, \Serializable
     public function removeTicket(\AppBundle\Entity\Ticket $ticket)
     {
         $this->tickets->removeElement($ticket);
+    }
+
+    /**
+     * Add nota
+     *
+     * @param \AppBundle\Entity\Nota $nota
+     *
+     * @return Usuario
+     */
+    public function addNota(\AppBundle\Entity\Nota $nota)
+    {
+        $this->notas[] = $nota;
+
+        return $this;
+    }
+
+    /**
+     * Remove nota
+     *
+     * @param \AppBundle\Entity\Nota $nota
+     */
+    public function removeNota(\AppBundle\Entity\Nota $nota)
+    {
+        $this->notas->removeElement($nota);
+    }
+
+    /**
+     * Get notas
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNotas()
+    {
+        return $this->notas;
     }
 }

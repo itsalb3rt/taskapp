@@ -30,9 +30,8 @@ class Nota
 
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="usuario_id", type="integer")
+     * @ORM\ManyToOne(targetEntity="Usuario", inversedBy="notas")
+     * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id")
      */
     private $usuarioId;
 
@@ -133,5 +132,28 @@ class Nota
     }
 
 
-}
 
+    /**
+     * Set ticket
+     *
+     * @param \AppBundle\Entity\Ticket $ticket
+     *
+     * @return Nota
+     */
+    public function setTicket(\AppBundle\Entity\Ticket $ticket = null)
+    {
+        $this->ticket = $ticket;
+
+        return $this;
+    }
+
+    /**
+     * Get ticket
+     *
+     * @return \AppBundle\Entity\Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+}

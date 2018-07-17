@@ -30,9 +30,8 @@ class Nota
 
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="usuario_id", type="integer")
+     * @ORM\ManyToOne(targetEntity="Usuario", inversedBy="notas")
+     * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id")
      */
     private $usuarioId;
 

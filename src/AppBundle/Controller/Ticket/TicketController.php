@@ -63,22 +63,24 @@ class TicketController extends Controller
     }
 
     /**
-     * @Route("/rest/iniciar_tarea/{id}",options={"expose"=true}, name="iniciar_tarea")
+     * @Route("/rest/cambiar_estado/{id}",options={"expose"=true}, name="cambiar_estado")
      * @Method("PUT")
      * @param Request $request
      * @param Ticket $ticket
      *
      * @return JsonResponse
      */
-    public function iniciar_tarea($id){
-
+    public function cambiarEstado($id,Request $request){
+        $estado = json_decode($request->getContent(),true);
         $fecha = new \DateTime('now', (new \DateTimeZone('America/Santiago')));
         //Enviando actualizacion
+
         $entityManager = $this->getDoctrine()->getManager();
         $ticket = $entityManager->getRepository(Ticket::class)->find($id);
         $ticket->setFechaCompletado($fecha);
-        $ticket->setEstado("EN_PROCESO");
+        $ticket->setEstado($estado['estado']);
         $entityManager->flush();
+
         $data = array('id'=>$id);
         $jsonContent = $this->get('serializer')->serialize($data,'json');
         $jsonContent = json_decode($jsonContent,true);
@@ -159,6 +161,7 @@ class TicketController extends Controller
      */
     public function consulta_ticket_id($ticket_id = 1){
         $ticket_id = $_GET['ticket'];
+
         $mensaje_busqueda = 'Oops! no se encontro nada: ' ;
         //Verificand si el usuario ha introducido un numero
         if(is_numeric($ticket_id)){
@@ -167,9 +170,12 @@ class TicketController extends Controller
                 ->findBy(array('id'=>$ticket_id));
             //Verificando que existe resultado de la consulta
             if(isset($ticket[0])){
+                $notas = $ticket[0]->getNotas();
+
                 return $this->render("@App/Ticket/ver_ticket.html.twig",
                     [
-                        "ticket"=>$ticket[0]
+                        "ticket"=>$ticket[0],
+                        "notas"=>$notas
                     ]
                 );
             }else{

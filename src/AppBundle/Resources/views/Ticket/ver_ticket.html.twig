@@ -1,14 +1,16 @@
 {% extends 'base.html.twig' %}
-{% block titulo %}Crear tarea{% endblock %}
+{% block titulo %}Ticket {{ ticket.id }}{% endblock %}
 {% block menu_tareas %}class="active"{% endblock %}
 {% block body %}
     <div class="alinear_izquierda" style="margin: auto;">
     <span class="datos_ticket" data-id_ticket="{{ ticket.id }}" data-id_solicitante="{{ ticket.usuario }}" data-id_asignado="{{ ticket.usuarioAsignadoId }}" data-id_usuario_nota="{{ app.user.id }}" hidden></span>
         <h1>Asignacion # {{ ticket.id }} </h1>
-        <span class="float_right"><strong>{{ ticket.fechaCreado|date("m/d/Y") }}</strong></span>
+        <span class="float_right"><strong>{{ ticket.fechaCreado|date("m/d/Y H:i:s") }}</strong></span>
         {% if app.user.tipoUsuario == 'TECNICO' %}
             {% if ticket.estado == "PENDIENTE" %}
                 <button class="btn btn-primary boton_iniciar_tarea">INICIAR</button>
+            {% elseif ticket.estado == "EN_PROCESO" %}
+                <button class="btn btn-warning boton_terminar_tarea">TERMINAR</button>
             {% endif %}
         {% endif %}
         <div>
@@ -30,13 +32,14 @@
                         <th>Usuario</th>
                     </thead>
                     <tbody>
-                    {#{% for nota in notas %}#}
-                        {#<tr>#}
-                            {#<td>{{ nota.fecha|date("m/d/Y") }}</td>#}
-                            {#<td>{{ nota.comentario }}</td>#}
-                            {#<td>{{ nota.usuarioId }}</td>#}
-                        {#</tr>#}
-                    {#{% endfor %}#}
+
+                    {% for nota in notas %}
+                        <tr>
+                            <td>{{ nota.fecha|date("m/d/Y H:i:s") }}</td>
+                            <td>{{ nota.comentario }}</td>
+                            <td>{{ nota.usuarioId.nombre }}</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -54,25 +57,12 @@
     <script>
         $(document).on('click','.boton_iniciar_tarea',function(){
             var ticket_id = $('.datos_ticket').data('id_ticket');
-            iniciar_tarea(ticket_id);
+            /**
+             * Cambiando el estado del ticket,
+             * Esta funcion esta en el archivo ticket js
+             **/
+            cambiar_estado_ticket(ticket_id,'EN_PROCESO');
         });
-        /**
-         * Funcion para cambiar estado de ticket a EN_PROCESO
-         **/
-        function iniciar_tarea(ticket_id){
-
-            $.ajax({
-                url:Routing.generate('iniciar_tarea',{id:ticket_id}),
-                type:'PUT',
-                success:function(response){
-                    $('.boton_iniciar_tarea').prop('disabled','disabled');
-                    desplegar_notificacion('Tarea iniciada');
-                },
-                error:function(err){
-                    console.log(err.responseText);
-                }
-            });
-        }
 
         /**
          * modal agregar nota
@@ -86,29 +76,17 @@
 
         $(document).on('submit','.form_agregar_nota',function(e){
            e.preventDefault();
-            agregar_nota();
-        });
 
-        function agregar_nota(){
-            //Algunas variables
             var id_ticket = $('.datos_ticket').data('id_ticket');
             var id_usuario_nota = $('.datos_ticket').data('id_usuario_nota');
             var nota = $('.form_agregar_nota .nota').val();
 
-            $.ajax({
-                url:Routing.generate('guardar_nota'),
-                type:'POST',
-                data:JSON.stringify({usuarioId:id_usuario_nota,comentario:nota,ticket:id_ticket}),
-                success:function(response){
-                    desplegar_notificacion('Nota agregada');
-                    $('.modal_agregar_nota').iziModal('close');
-                    console.log(response);
-                },
-                error:function(err){
-                    console.log(err.responseText);
-                }
-            });
-        }
+            /**
+             * Invocando la funcion que guarda el comentario
+             * Esta funcion esta en el archivo ticket js
+             **/
+            agregar_nota(id_ticket,id_usuario_nota,nota);
+        });
 
     </script>
 {% endblock %}

@@ -147,6 +147,9 @@ class UsuarioController extends Controller
      */
     public function loginAction(Request $request,AuthenticationUtils $authenticationUtils) {
         // get the login error if there is one
+        if($this->getUser()!=null){
+            return $this->redirectToRoute('vista_home');
+        }
         $error = $authenticationUtils->getLastAuthenticationError();
 
         // last username entered by the user

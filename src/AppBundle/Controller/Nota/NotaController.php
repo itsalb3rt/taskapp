@@ -54,9 +54,10 @@ class NotaController extends Controller
         $normalizer->setCircularReferenceHandler(function ($object) {
             return $object->getId();
         });
+
         $normalizers = array($normalizer);
         $serializer = new Serializer($normalizers, $encoders);
-        $json =  $serializer->serialize($nota,'json');
+        $json =  $serializer->serialize($data,'json');
         return new JsonResponse($json);
     }
 
