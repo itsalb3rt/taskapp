@@ -12,18 +12,24 @@
             </div>
             <div>
                 <label for="asignar">Asignar A:</label>
-                <select name="asignar" id="asignar" class="form-control form-control-lg" required>
+                <select name="asignar" id="asignar" class="form-control form-control-lg" required autofocus>
                     <option value="">Seleccione un usuario técnico</option>
                     {% for usuario in usuarios %}
-                        {% if usuario.tipoUsuario == "TECNICO" %}
+                        {% if usuario.tipoUsuario == "ROLE_ADMIN" %}
                             <option value="{{ usuario.id }}">{{ usuario.nombre }}</option>
                         {% endif %}
                     {% endfor %}
                 </select>
             </div>
+            <br>
             <div class="form-group">
-                <label for="descripcion_tarea">Descripcion</label>
-                <textarea class="form-control" name="descripcion_tarea" id="descripcion_tarea" rows="3" required></textarea>
+                <label for="descripcion_tarea">Descripción</label>
+                <textarea class="form-control" name="descripcion_tarea" id="descripcion_tarea" rows="3" style="height: 200px" required></textarea>
+            </div>
+            <div class="centrar_contenido">
+                <p>
+                    <i class="glyphicon glyphicon-info-sign"></i>&Tab;Favor ser lo más descriptivo y resumido posible.
+                </p>
             </div>
             <div class="notificacion_tarea">
 
@@ -49,9 +55,10 @@
                 data:JSON.stringify({descripcion: descripcion, usuario: usuario_id, usuarioAsignadoId: asignado}),
                 success:function(response){
                     try{
+                        var resp = JSON.parse(response);
                     //Desplegando notificacion
-                        desplegar_notificacion('Ticket #' +response.id + ' creado');
-                        $('.notificacion_tarea').append("<div class='success_ticket'>Ticket #" + response.id + " creado</div>");
+                        desplegar_notificacion('Ticket #' +resp.id + ' creado');
+                        $('.notificacion_tarea').append("<div class='success_ticket'>Ticket #" + resp.id + " creado</div>");
                     }catch (e) {
                         console.log(e.message());
                     }

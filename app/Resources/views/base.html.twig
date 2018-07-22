@@ -7,10 +7,18 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="{{ asset('assets/images/favicon.ico')}}">
+    <link rel="icon" href="{{ asset('assets/images/taskapp_icon.png')}}">
 
     <title>TaskApp - {% block titulo %}{% endblock %}</title>
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+    <!-- Paginacion -->
+    <script src="{{ asset('assets/js/jquery.tablesorter.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.tablesorter.pager.js') }}"></script>
+    <script src="{{ asset('assets/js/utilitario.js') }}"></script>
+    <script src="{{ asset('assets/js/clipboard.min.js') }}"></script>
+
+    <script src="{{ asset('assets/js/notificaciones.js') }}"></script>
+    <link href="{{ asset('assets/css/notificaciones.css') }}" rel="stylesheet">
     <script>window.jQuery || document.write('<script src="{{ asset('assets/js/jquery.min.js') }}"><\/script>')</script>
     <!-- Estilos personalizados -->
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
@@ -46,7 +54,6 @@
 
     <![endif]-->
 </head>
-
 <body>
 
 {% if is_granted(expression('"ROLE_ADMIN" in roles or (not is_anonymous())')) %}
@@ -68,12 +75,12 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li {% block menu_home %}{% endblock %}><a href="{{path('vista_home')}}">Home</a></li>
-                {% if app.user.tipoUsuario == 'TECNICO' %}
+                {% if app.user.tipoUsuario == 'ROLE_ADMIN' %}
                     <li {% block menu_usuarios %}{% endblock %}><a href="{{path('lista_usuarios')}}">Usuarios</a></li>
                     <li {% block menu_mis_asignaciones %}{% endblock %}><a href="{{ path('mis_asignaciones') }}">Mis Asignaciones</a></li>
                     <li {% block menu_tickets %}{% endblock %}><a href="{{ path('lista_tickets') }}">Tickets</a></li>
                 {% endif %}
-                {% if app.user.tipoUsuario == 'NORMAL' %}
+                {% if app.user.tipoUsuario == 'ROLE_USER' %}
                     <li {% block menu_mis_tickets %}{% endblock %}><a href="{{ path('mis_tickets') }}">Mis Tickets</a></li>
                 {% endif %}
             </ul>
@@ -87,6 +94,25 @@
                 <div class="usuario_logueado">
                     <span class="glyphicon glyphicon-user"></span>
                     <span class="nombre_usuario">{{ app.user.nombre }}</span>
+                </div>
+                <div class="notificaciones menu_notificaciones">
+                    <i class="glyphicon glyphicon-inbox icono_notificaciones"></i>
+                    <div class="bandeja_notificaciones" hidden>
+
+                    </div>
+                </div>
+                <div class="bandeja_notificaciones" hidden="true">
+                    <div class="encabezado_bandeja_notificaciones">
+                        <i class="glyphicon glyphicon-bell"></i>&Tab;Notificaciones
+                    </div>
+                    <div class="cuerpo_bandeja_notificaciones">
+                        <ul class="lista_notificaciones">
+
+                        </ul>
+                    </div>
+                    <div class="pie_bandeja_notificaciones centrar_contenido">
+                        Ver todas
+                    </div>
                 </div>
                 <div>
                     <a href="{{ path('logout') }}" class="btn btn-danger btn-sm" style="color: white;"><span class="glyphicon glyphicon-log-out"></span>&Tab;Salir</a>

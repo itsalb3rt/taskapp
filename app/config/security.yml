@@ -24,3 +24,9 @@ security:
 
     access_control:
         - { path: ^/login,  roles:  IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/home,  roles:  [ROLE_USER, ROLE_ADMIN] }
+        - { path: ^/usuario,  roles:  ROLE_ADMIN }
+        - { path: ^/tickets,  roles:  ROLE_ADMIN }
+        - { path: ^/mis_asignaciones,  roles:  ROLE_ADMIN }
+        - { path: ^/mis_tickets,  roles:  ROLE_USER }
+        - { path: ^/crear_ticket,  roles:  ROLE_USER }

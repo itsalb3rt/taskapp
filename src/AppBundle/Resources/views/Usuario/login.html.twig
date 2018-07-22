@@ -2,6 +2,13 @@
 {% block titulo %}Login{% endblock %}
 {% block menu_home %}class="active"{% endblock %}
 {% block body %}
+    <div>
+        <img src="{{ asset('assets/images/company_logo.jpg') }}" alt="">
+    </div>
+    <div>
+        <p>Bienvenido al sistema de creación de tickets, antes de continuar debe iniciar sesión con sus datos o bien crear su usuario, si tiene algún inconveniente puede comunicarse al departamento de soporte al 500-403-503 Ext. 404
+        </p>
+    </div>
         <h1>Login</h1>
         {% if error %}
             <div class='red'>
@@ -13,7 +20,7 @@
 
         <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-            <input type="text" id="inputName" name='_username' value="{{ last_username }}" class="form-control" placeholder="Nombre de usuario" required autofocus>
+            <input type="text" id="inputName" name='_username' value="{{ last_username }}" class="form-control" placeholder="Nombre de usuario" required autofocus autocomplete="off">
         </div>
 
         <div class="input-group">
@@ -44,24 +51,41 @@
                 <input type="email" name="username" class="email" id="email" placeholder="alhidalgo@edenorte.com.do" autocomplete="off" required>
             </div>
             <div class="input">
-                <label for="username">Contraseña <span class="text-muted"><small>(Obligatorio)</small></span></label></label>
+                <label for="contrasena">Contraseña <span class="text-muted"><small>(Obligatorio)</small></span></label></label>
                 <input type="password" name="contrasena" class="contrasena" id="contrasena" placeholder="**********" autocomplete="off" required>
+                <label for="contrasena2">Repita contraseña <span class="text-muted"><small>(Obligatorio)</small></span></label></label>
+                <input type="password" name="contrasena2" class="contrasena2" id="contrasena2" placeholder="**********" autocomplete="off" required>
             </div>
+            <div class="info_contrasena"></div>
             <div class="input" style="text-align: left; display: inline-block;">
                 <div><label>Tipo de Usuario</label></div>
-                <input type="radio" name="tipo_usuario" value="NORMAL" class="tipo_usuario" id="tipo_normal" checked>
+                <input type="radio" name="tipo_usuario" value="ROLE_USER" class="tipo_usuario" id="tipo_normal" checked>
                 <label for="tipo_normal">NORMAL</label>
-                <input type="radio" name="tipo_usuario" value="TECNICO" class="tipo_usuario" id="tipo_tecnico">
+                <input type="radio" name="tipo_usuario" value="ROLE_ADMIN" class="tipo_usuario" id="tipo_tecnico">
                 <label for="tipo_tecnico">TECNICO</label>
             </div>
+
             <div class="input">
-                <input type="submit" name="crear_usuario" class="submit_crear_usuario btn btn-primary" value="Crear Usuario">
+                <input type="submit" name="crear_usuario" class="submit_crear_usuario btn btn-primary" value="Crear Usuario" disabled>
             </div>
         </form>
     </div>
     <script>
+        //Validar contrasena
+        $(document).on('keyup','.contrasena,.contrasena2',function(){
+            var contrasena1 = $('.contrasena').val();
+            var contrasena2 = $('.contrasena2').val();
+            if(contrasena1 == contrasena2){
+                $('.submit_crear_usuario').removeAttr('disabled');
+                $('.info_contrasena').empty().append('<span class="bg-success">Contraseña valida</span>');
+            }else{
+                $('.submit_crear_usuario').prop('disabled','disabled');
+                $('.info_contrasena').empty().append('<span class="bg-danger">Contraseña no valida</span>');
+            }
+        });
         $(document).on('submit','.formulario_crear_usuario',function(e){
             e.preventDefault();
+            $('.submit_crear_usuario').prop('disabled','disabled');
             crear_usuario();
         });
         function crear_usuario(){

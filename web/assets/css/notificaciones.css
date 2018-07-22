@@ -1,0 +1,114 @@
+.bandeja_notificaciones{
+	background: #FAFAFA;
+    border-radius: 0px 0px 5px 5px;
+    margin-top: 20px;
+    width: 400px;
+    max-width: 350px;
+    min-width: 240px;
+    height: auto;
+	max-height: 400px;
+    position: absolute;
+    box-shadow: 0px 2px 5px 0px grey;
+    z-index: 9999;
+    top: 50px;
+    left: 50%;
+    right: 50%;
+}
+.encabezado_bandeja_notificaciones{
+	background-color: #2196F3;
+	padding: 8px 14px;
+	color: white;
+	font-weight: bold;
+	font-size: 12px;
+	text-align: left;
+}
+.pie_bandeja_notificaciones{
+	background-color: #2196F3;
+	padding:8px 0px;
+	color: white;
+	cursor: pointer;
+	font-weight: bold;
+	border-radius: 0px 0px 5px 5px;
+	font-size: 12px;
+}
+.cuerpo_bandeja_notificaciones{
+	margin: 10px auto;
+	
+}
+
+/**
+* Numero que aparece encima de la caja de notificaciones
+**/
+.numero_notificaciones{
+	color: white;
+	font-weight: bold;
+	font-size: 11px;
+	padding: 2px 4px;
+	border-radius: 2px;
+	position: absolute;
+    top: -16px;
+	background-color: #f44336;
+}
+.bandeja_notificaciones .cuerpo_bandeja_notificaciones ul{
+	margin: 0px;
+	padding: 0px;
+	text-align: left;
+	max-height: 352px;
+    overflow-y: scroll;
+}
+.bandeja_notificaciones .cuerpo_bandeja_notificaciones ul::-webkit-scrollbar{
+	width: 7px;
+}
+.bandeja_notificaciones .cuerpo_bandeja_notificaciones ul::-webkit-scrollbar-thumb{
+	background: #2196F3;
+	border-radius: 4px;
+}
+.bandeja_notificaciones .cuerpo_bandeja_notificaciones ul li.ninguna_notificacion i.fa-magic{
+	font-size: 18px;
+    background-image: linear-gradient(to right, #ffeb3b, #ffec47, #ffed52, #ffee5c, #ffef66);
+    border-radius: 4px;
+    padding: 5px 11px;
+}
+.bandeja_notificaciones .cuerpo_bandeja_notificaciones ul li.ninguna_notificacion{
+	margin: auto;
+	padding: 20px;
+	border: 0px;
+	text-align: center;
+}
+.bandeja_notificaciones .cuerpo_bandeja_notificaciones ul li .detalle_notificacion .cantidad{
+	font-size: 14px;
+    border: 1px solid rgba(128, 128, 128, 0.35);
+    padding: 4px;
+    border-radius: 4px;
+    background-color: white;
+	margin-left: 10px;
+}
+.bandeja_notificaciones .cuerpo_bandeja_notificaciones ul li .detalle_notificacion{
+	font-size: 11px;
+	margin: 7px 0px;
+}
+.bandeja_notificaciones .cuerpo_bandeja_notificaciones ul li{
+	list-style: none;
+    border-bottom: 1px solid #eff0f1;
+    margin-bottom: 5px;
+    padding-bottom: 0px;
+    padding-top: 8px;
+	border-left: 8px solid tomato;
+}
+.bandeja_notificaciones .cuerpo_bandeja_notificaciones ul li > div{
+	margin-left: 0px;
+	padding-left: 4px;
+}
+/** Texto que describe sobre que es la notificacion***/
+.descripcion_notificacion{
+	color: rgba(41, 41, 41, 0.46);
+    font-size: 11px;
+}
+.boton_ocultar_notificacion:hover{
+	cursor: pointer;
+	text-decoration: underline;
+}
+.boton_ocultar_notificacion{
+	float: right;
+	margin-right: 6px;
+}

@@ -20,4 +20,14 @@ class DefaultController extends Controller
             'activar_opcion_menu' => 'home'
         ]);
     }
+
+    /**
+     * @Route("^/", name="verificar_login")
+     */
+    public function verificar_login()
+    {
+        if($this->getUser() == null){
+            return $this->redirectToRoute('login');
+        }
+    }
 }

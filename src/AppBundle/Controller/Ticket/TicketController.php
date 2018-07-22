@@ -21,6 +21,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
 class TicketController extends Controller
 {
@@ -53,13 +56,24 @@ class TicketController extends Controller
 
         $form = $this->createForm(TicketType::class,$ticket);
         $form->submit($data);
-            $entity_manager = $this->getDoctrine()->getManager();
-            $entity_manager->persist($ticket);
-            $entity_manager->flush();
+        $entity_manager = $this->getDoctrine()->getManager();
+        $entity_manager->persist($ticket);
+        $entity_manager->flush();
 
-            $jsonContent = $this->get('serializer')->serialize($ticket,'json');
-            $jsonContent = json_decode($jsonContent,true);
-            return new JsonResponse($jsonContent);
+        $nuevo_id = $ticket->getId();
+
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizer = new ObjectNormalizer();
+        $normalizer->setCircularReferenceLimit(1);
+        // Add Circular reference handler
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+
+        $normalizers = array($normalizer);
+        $serializer = new Serializer($normalizers, $encoders);
+        $json =  $serializer->serialize(['id'=>$nuevo_id],'json');
+        return new JsonResponse($json);
     }
 
     /**
@@ -72,12 +86,13 @@ class TicketController extends Controller
      */
     public function cambiarEstado($id,Request $request){
         $estado = json_decode($request->getContent(),true);
-        $fecha = new \DateTime('now', (new \DateTimeZone('America/Santiago')));
-        //Enviando actualizacion
+        $fecha = new \DateTime();
 
         $entityManager = $this->getDoctrine()->getManager();
         $ticket = $entityManager->getRepository(Ticket::class)->find($id);
-        $ticket->setFechaCompletado($fecha);
+        if($estado['estado'] == "TERMINADO"){
+            $ticket->setFechaCompletado($fecha);
+        }
         $ticket->setEstado($estado['estado']);
         $entityManager->flush();
 

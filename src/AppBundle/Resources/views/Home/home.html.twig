@@ -2,9 +2,21 @@
 {% block titulo %}Inicio{% endblock %}
 {% block menu_home %}class="active"{% endblock %}
 {% block body %}
-    <h1>Esta es la pagina de inicio</h1>
+    <h1>Acciones rápidas</h1>
     <hr>
-    <a href="{{ "crear_ticket" }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&Tab;CREAR TICKET</a>
-    <hr>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias, consequatur consequuntur deserunt dicta dignissimos eaque fuga hic, nemo quas sed sequi voluptas. Adipisci animi aut consectetur debitis dignissimos dolorem porro!</p>
+    {% if app.user.tipoUsuario == 'ROLE_USER' %}
+        <a href="{{ "crear_ticket" }}" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-plus"></i>&Tab;CREAR TICKET</a>
+        <a href="{{ "mis_tickets" }}" class="btn btn-success btn-lg"><i class="glyphicon glyphicon-list-alt"></i>&Tab;MIS TICKETS</a>
+        <hr>
+        <pre>
+            <p>
+                <i class="glyphicon glyphicon-info-sign"></i>&Tab;Si tienes algún problema puedes generar un nuevo ticket y el personal encargado te asistirá.
+                Las respuestas dependerán del cumulo de ticket y la capacidad operativa del área
+            </p>
+        </pre>
+    {% else %}
+        <a href="{{ "mis_asignaciones" }}" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-folder-open"></i>&Tab;&Tab;MIS ASIGNACIONES</a>
+        <a href="{{ "tickets" }}" class="btn btn-success btn-lg"><i class="glyphicon glyphicon-list-alt"></i>&Tab;TODOS LOS TICKETS</a>
+    {% endif %}
+
 {% endblock %}

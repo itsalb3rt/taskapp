@@ -3,12 +3,13 @@
 {% block menu_usuarios %}class="active"{% endblock %}
 {% block body %}
     <h1>Lista de Usuarios</h1>
-    <table class="tabla_usuarios table table-condensed table-hover table-responsive table-striped">
+    <table id="tabla_datos" class="tabla_usuarios table table-condensed table-hover table-responsive table-striped table-bordered">
         <thead>
         <tr>
             <th>ID</th>
             <th>Nombre</th>
             <th>Username</th>
+            <th>Tipo</th>
             <th>Acciones</th>
         </tr>
         </thead>
@@ -16,12 +17,18 @@
         <div class="alinear_derecha">
             <button class="btn btn-primary crear_usuario"><span class="glyphicon glyphicon-plus"></span>&Tab;Crear Usuario</button>
         </div>
-
+        <br>
             {% for usuario in usuarios %}
                 <tr class="{{ usuario.id }}">
                     <td>{{ usuario.id }}</td>
                     <td>{{ usuario.nombre }}</td>
                     <td>{{ usuario.username }}</td>
+                    {% if usuario.tipoUsuario == 'ROLE_ADMIN' %}
+                        <td>TECNICO</td>
+                    {% elseif usuario.tipoUsuario == 'ROLE_USER' %}
+                        <td>NORMAL</td>
+                    {% endif %}
+
                     <td>
                         <a class="btn btn-primary btn-xs" href="{{ path('editar_usuario',{'id' : usuario.id}) }}"><span class="glyphicon glyphicon-edit"></span>&Tab;Editar</a>
                         <button onclick="eliminar('{{ usuario.id }}')" class="btn btn-danger btn-xs" href="{{ path('eliminar_usuario',{'id' : usuario.id}) }}"><span class="glyphicon glyphicon-remove"></span>&Tab;eliminar</button>
@@ -30,6 +37,31 @@
             {% endfor %}
         </tbody>
     </table>
+    <!-- Paginacion -->
+    <div class="contenedor_paginacion_jquery">
+        <div id="paginacion_jquery" class="paginacion_jquery">
+            <form>
+                <span class="first fa fa-angle-double-left boton_paginacion_jquery texto_blanco" title="Primera"></span>
+                <span class="prev glyphicon glyphicon-menu-left boton_paginacion_jquery texto_blanco" title="Anterior"></span>
+                <input type="text" class="pagedisplay texto_negrita" size="8"/>
+                <span class="next glyphicon glyphicon-menu-right boton_paginacion_jquery texto_blanco" title="Siguiente"></span>
+                <span class="last fa fa-angle-double-right boton_paginacion_jquery texto_blanco" title="Ultima"></span>
+                <select class="pagesize seleccion texto_negrita">
+                    <option value="20">Ver..</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                    <option value="80">80</option>
+                    <option value="150">150</option>
+                    <option value="500">500</option>
+                    <option value="9999">Todo</option>
+                </select>
+                <strong>Total : </strong><span id="total_filas">{{ usuarios|length }}</span>
+            </form>
+        </div>
+    </div>
       <div class="modal_crear_usuario centrar_contenido formulario">
             <form action="#" method="POST" class="formulario_crear_usuario">
                <div class="input">
@@ -41,24 +73,57 @@
                     <input type="email" name="username" class="email" id="email" placeholder="alhidalgo@edenorte.com.do" autocomplete="off" required>
                 </div>
                 <div class="input">
-                    <label for="username">Contraseña <span class="text-muted"><small>(Obligatorio)</small></span></label></label>
+                    <label for="contrasena">Contraseña <span class="text-muted"><small>(Obligatorio)</small></span></label></label>
                     <input type="password" name="contrasena" class="contrasena" id="contrasena" placeholder="**********" autocomplete="off" required>
+                    <label for="contrasena2">Repita contraseña <span class="text-muted"><small>(Obligatorio)</small></span></label></label>
+                    <input type="password" name="contrasena2" class="contrasena2" id="contrasena2" placeholder="**********" autocomplete="off" required>
                 </div>
+                <div class="info_contrasena"></div>
                <div class="input" style="text-align: left; display: inline-block;">
                    <div><label>Tipo de Usuario</label></div>
-                   <input type="radio" name="tipo_usuario" value="NORMAL" class="tipo_usuario" id="tipo_normal" checked>
+                   <input type="radio" name="tipo_usuario" value="ROLE_USER" class="tipo_usuario" id="tipo_normal" checked>
                    <label for="tipo_normal">NORMAL</label>
-                   <input type="radio" name="tipo_usuario" value="TECNICO" class="tipo_usuario" id="tipo_tecnico">
+                   <input type="radio" name="tipo_usuario" value="ROLE_ADMIN" class="tipo_usuario" id="tipo_tecnico">
                    <label for="tipo_tecnico">TECNICO</label>
                </div>
+
                 <div class="input">
-                    <input type="submit" name="crear_usuario" class="submit_crear_usuario btn btn-primary" value="Crear Usuario">
+                    <input type="submit" name="crear_usuario" class="submit_crear_usuario btn btn-primary" value="Crear Usuario" disabled>
                 </div>
             </form>
         </div>
     <script>
+        $(document).on('keyup','.contrasena,.contrasena2',function(){
+            var contrasena1 = $('.contrasena').val();
+            var contrasena2 = $('.contrasena2').val();
+            if(contrasena1 == contrasena2){
+                $('.submit_crear_usuario').removeAttr('disabled');
+                $('.info_contrasena').empty().append('<span class="bg-success">Contraseña valida</span>');
+            }else{
+                $('.submit_crear_usuario').prop('disabled','disabled');
+                $('.info_contrasena').empty().append('<span class="bg-danger">Contraseña no valida</span>');
+            }
+        });
+        /**
+         * Paginacion
+         **/
+        $(document).ready(function(){
+            $( function () {
+                $( '#tabla_datos' ).tablesorter();
+            });
+
+            $(function() {
+                $("#tabla_datos")
+                    .tablesorter({widthFixed: true, widgets: ['zebra']})
+                    .tablesorterPager({container: $("#paginacion_jquery"),size:20});
+                /* Para establecer un numero de pagina por defecto se puede agregar lo siguiente
+                    .tablesorterPager({container: $("#paginacion_jquery"),size:20});
+                */
+            });
+        });
     $(document).on('submit','.formulario_crear_usuario',function(e){
             e.preventDefault();
+            $('.submit_crear_usuario').prop('disabled','disabled');
             crear_usuario();
     });
         function eliminar(id){
@@ -91,7 +156,6 @@
                     $('.modal_crear_usuario').iziModal('close');
                     //Desplegando notificacion
                     desplegar_notificacion('Usuario creado');
-                   console.log(response);
                 },
                 error:function(err){
                     desplegar_notificacion('Error al crear el usuario, es probable que ya exista','error');

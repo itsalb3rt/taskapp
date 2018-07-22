@@ -3,30 +3,100 @@
 {% block menu_usuarios %}class="active"{% endblock %}
 {% block body %}
     <h1>Editando Usuario</h1>
-    <form onsubmit="return false;">
+    <form class="form-horizontal centrar_contenido" onsubmit="return false;" style="width: 70%">
         <input type="text" value="{{ usuario.id }}" id="id" hidden>
         <div class="form-group">
-            <label for="nombre">Nombre</label>
-            <input class="form-control" id="nombre" type="text" value="{{ usuario.nombre }}">
+            <label class="control-label col-sm-2" for="nombre">Nombre</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="nombre" type="text" value="{{ usuario.nombre }}">
+            </div>
+
         </div>
         <div class="form-group">
-            <label for="username">Username</label>
-            <input class="form-control" type="text" id="username" value="{{ usuario.username }}">
+            <label for="username" class="control-label col-sm-2">Username</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" id="username" value="{{ usuario.username }}">
+            </div>
         </div>
-            <button type="botton" onclick="guardar()" class="btn btn-primary"><span class="glyphicon glyphicon-saved"></span>&Tab;Guardar</button>
+        <div class="form-group">
+            <label for="tipo_usuario" class="control-label col-sm-2">Tipo Usuario</label>
+            <div class="col-sm-10">
+            <select name="tipo_usuario" class="tipo_usuario form-control" id="tipo_usuario">
+                <option value="{{ usuario.tipoUsuario }}">
+                    {% if usuario.tipoUsuario == 'ROLE_ADMIN' %}
+                        TECNICO
+                    {% elseif usuario.tipoUsuario == 'ROLE_USER' %}
+                        NORMAL
+                    {% endif %}
+                </option>
+
+                    {% if usuario.tipoUsuario == 'ROLE_ADMIN' %}
+                        <option value="ROLE_USER">
+                                NORMAL
+                        </option>
+                    {% else %}
+                        <option value="ROLE_ADMIN">
+                            TECNICO
+                        </option>
+                    {% endif %}
+
+            </select>
+            </div>
+        </div>
+            <button type="botton" onclick="guardar()" class="btn btn-primary boton_guardar" disabled><i class="glyphicon glyphicon-saved"></i>&Tab;Guardar</button>
+            <button type="button" onclick="return false;" class="btn btn-danger reestablecer_contrasena"><i class="glyphicon glyphicon-refresh"></i>&Tab;Reestablecer contraseña</button>
     </form>
+    <div class="nueva_contrasena">
+
+    </div>
     <script>
+        //Copiando la nueva clave
+        $(document).on('click','.copiar_clave',function(){
+            new ClipboardJS('.copiar_clave');
+        });
+
+        //Verificando si hay algun cambio para habilitar el boton de guardar
+        $(document).on('change','#nombre,#tipo_usuario,#username',function(){
+            $('.boton_guardar').removeAttr('disabled');
+        });
+        $(document).on('click','.reestablecer_contrasena',function(){
+            //$(this).prop('disabled','disabled');
+            var id = $("#id").val();
+            reestablecer_contrasena(id);
+        });
+
+        function reestablecer_contrasena(id_usuario){
+
+            $.ajax({
+                url:Routing.generate('reestablecer_contrasena',{id:id_usuario}),
+                type:'POST',
+                success:function(response){
+                    try{
+                        resp = JSON.parse(response);
+                        desplegar_notificacion('Reestablecida');
+                        $('.nueva_contrasena').empty().append('Nueva Clave<input id="nueva_contrasena_copy" value="'+ resp.contrasena +'"><button class="copiar_clave btn" data-clipboard-target="#nueva_contrasena_copy"><i class="glyphicon glyphicon-copy"></i>&Tab;Copiar!</button>');
+                    }catch (e) {
+                        console.log(e.message);
+                    }
+                },
+                error:function(err){
+                    console.log(err.responseText);
+                }
+            });
+        }
+
         function guardar(){
+            $('.boton_guardar').prop('disabled','disabled');
+            var tipoUsuario = $("#tipo_usuario").val();
             var nombre = $("#nombre").val();
             var username = $("#username").val();
-            var email = $("#email").val();
             var id = $("#id").val();
 
             var data = {
                 id:id,
                 nombre:nombre,
                 username:username,
-                email:email
+                tipoUsuario:tipoUsuario
             }
 
             $.ajax({
@@ -36,6 +106,7 @@
                 success:function(response){
                     console.log(response);
                     desplegar_notificacion('Usuario modificado');
+
 
                 },
                 error:function(err){

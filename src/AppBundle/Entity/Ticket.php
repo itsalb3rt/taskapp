@@ -47,8 +47,7 @@ class Ticket
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Usuario", inversedBy="tickets")
-     * @ORM\JoinColumn(nullable=false)
-     * @ORM\Column(name="usuario", type="integer")
+     * @ORM\JoinColumn(name="usuario",referencedColumnName="id")
      */
     private $usuario;
 
@@ -64,7 +63,7 @@ class Ticket
      *
      * @ORM\Column(name="estado", type="string", length=10,options={"default" : "PENDIENTE"})
      */
-    private $estado ;
+    private $estado;
     /**
      * @ORM\OneToMany(targetEntity="Nota", mappedBy="ticket")
      */

@@ -3,27 +3,51 @@
 {% block menu_tareas %}class="active"{% endblock %}
 {% block body %}
     <div class="alinear_izquierda" style="margin: auto;">
-    <span class="datos_ticket" data-id_ticket="{{ ticket.id }}" data-id_solicitante="{{ ticket.usuario }}" data-id_asignado="{{ ticket.usuarioAsignadoId }}" data-id_usuario_nota="{{ app.user.id }}" hidden></span>
-        <h1>Asignacion # {{ ticket.id }} </h1>
-        <span class="float_right"><strong>{{ ticket.fechaCreado|date("m/d/Y H:i:s") }}</strong></span>
-        {% if app.user.tipoUsuario == 'TECNICO' %}
-            {% if ticket.estado == "PENDIENTE" %}
-                <button class="btn btn-primary boton_iniciar_tarea">INICIAR</button>
-            {% elseif ticket.estado == "EN_PROCESO" %}
-                <button class="btn btn-warning boton_terminar_tarea">TERMINAR</button>
-            {% endif %}
-        {% endif %}
-        <div>
-            <div>
-                Solicitado por: <strong>{{ ticket.usuario }}</strong>
-            </div>
-            <div>
-                Descripcion: {{ ticket.descripcion }}
+
+    <span class="datos_ticket" data-id_ticket="{{ ticket.id }}" data-id_solicitante="{{ ticket.usuario.id }}" data-id_asignado="{{ ticket.usuarioAsignadoId }}" data-id_usuario_nota="{{ app.user.id }}" hidden></span>
+        <div class="panel panel-default">
+           <div class="panel-heading">
+               <h1>Asignacion # {{ ticket.id }} </h1>
+           </div>
+             <div class="panel-body">
+                <span class="float_right"><strong>{{ ticket.fechaCreado|date("m/d/Y H:i:s") }}</strong></span>
+                {% if app.user.tipoUsuario == 'ROLE_ADMIN' %}
+                    {% if ticket.estado == "PENDIENTE" %}
+                        <button class="btn btn-primary boton_iniciar_tarea">INICIAR</button>
+                    {% elseif ticket.estado == "EN_PROCESO" %}
+                        <button class="btn btn-warning boton_terminar_tarea">TERMINAR</button>
+                    {% endif %}
+                {% endif %}
+                <div>
+                    <div>
+                        <strong>Solicitado por:</strong> {{ ticket.usuario.nombre }}
+                    </div>
+                    <div>
+                        <strong>Estado:</strong>{{ ticket.estado }}
+                    </div>
+                    {% if ticket.estado == "TERMINADO" %}
+                        <div>
+                            <strong>Fecha termiando:</strong> {{ ticket.fechaCompletado|date("m/d/Y H:i:s") }}
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>Descripción</h4></div>
+            <div class="panel-body">
+                {{ ticket.descripcion }}
+            </div>
+        </div>
+
+    <div class="panel panel-default">
+    <div class="panel-heading"><h4>Notas</h4></div>
+    <div class="panel-body">
         <div class="contenedor_notas">
-            <h1>Notas</h1>
-            <button class="btn btn-success float_right boton_agregar_nota"><span class="glyphicon glyphicon-book"></span>&Tab;Agregar nota</button>
+            {% if ticket.estado != "TERMINADO" %}
+                <button class="btn btn-success float_right boton_agregar_nota"><span class="glyphicon glyphicon-book"></span>&Tab;Agregar nota</button>
+            {% endif %}
             <div class="notas">
                 <table class="table table-condensed table-hover table-responsive table-striped">
                     <thead>
@@ -44,10 +68,13 @@
                 </table>
             </div>
         </div>
+    </div>
+    </div>
         <div class="modal_agregar_nota centrar_contenido">
             <form action="#" method="POST" class="form_agregar_nota">
-                <h1><label for="nota">Nota</label></h1>
+                <h1><label for="nota">Agregar nota</label></h1>
                 <textarea class="nota" name="nota" id="nota" cols="30" rows="5" style="width: 100%" required></textarea>
+                <hr>
                 <div>
                     <button type="submit" class="btn btn-primary">Agregar nota</button>
                     <button type="reset" class="btn btn-danger" onclick="$('.modal_agregar_nota').iziModal('close');">Cancelar</button>
@@ -55,13 +82,29 @@
             </form>
         </div>
     <script>
+        /**
+         * Cambiar solicitud a estado EN_PROCESO
+         **/
         $(document).on('click','.boton_iniciar_tarea',function(){
+            $('.boton_iniciar_tarea').prop('disabled','disabled');
             var ticket_id = $('.datos_ticket').data('id_ticket');
             /**
              * Cambiando el estado del ticket,
              * Esta funcion esta en el archivo ticket js
              **/
             cambiar_estado_ticket(ticket_id,'EN_PROCESO');
+        });
+        /**
+         * Cambiar solicitud a estado EN_PROCESO
+         **/
+        $(document).on('click','.boton_terminar_tarea',function(){
+            $('.boton_iniciar_tarea').prop('disabled','disabled');
+            var ticket_id = $('.datos_ticket').data('id_ticket');
+            /**
+             * Cambiando el estado del ticket,
+             * Esta funcion esta en el archivo ticket js
+             **/
+            cambiar_estado_ticket(ticket_id,'TERMINADO');
         });
 
         /**

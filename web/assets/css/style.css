@@ -85,3 +85,55 @@
 .usuario_logueado:hover{
     cursor: pointer;
 }
+
+.icono_notificaciones{
+    background-color: white;
+    color: black;
+    padding: 7px 9px;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+.icono_notificaciones:hover{
+    color: tomato;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.contenedor_paginacion_jquery .paginacion_jquery span{
+    cursor: pointer;
+}
+/* Estilos caja filtro */
+.contenedor_barra_filtro{
+    margin: 10px 0px;
+}
+.contenedor_barra_filtro .filtro,.contenedor_barra_filtro select{
+    border: 1px solid rgba(142,142,142,0.51);
+    padding: 10px;
+    border-radius: 4px;
+    margin: 0px 4px 0px 0px;
+}
+.nueva_contrasena{
+    margin: 16px auto;
+    font-size: 35px;
+    background-color: #03A9F4;
+    color: white;
+    width: 500px;
+    border-radius: 4px;
+    box-shadow: 0px 3px 0px 1px rgba(128, 128, 128, 0.5);
+    transition: 0.5s;
+}
+
+.nueva_contrasena:hover{
+    cursor: pointer;
+    box-shadow: none;
+    transition: 0.5s;
+}
+input#nueva_contrasena_copy{
+    border: none;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    width: 130px;
+    margin: auto 15px;
+    background: transparent;
+}

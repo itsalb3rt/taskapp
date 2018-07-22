@@ -21,10 +21,12 @@ use Symfony\Component\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
 class UsuarioController extends Controller
 {
-
 
     /**
      * @Route("/usuario", options={"expose"=true},name="lista_usuarios")
@@ -127,8 +129,9 @@ class UsuarioController extends Controller
         $data = $request->getContent();
         $data = json_decode($data,true);
 
-        $form = $this->createForm(UsuarioType::class,$usuario);
-        $form->submit($data);
+        $usuario->setUsername($data['username']);
+        $usuario->setNombre($data['nombre']);
+        $usuario->setTipoUsuario($data['tipoUsuario']);
 
         $entity_manager = $this->getDoctrine()->getManager();
         $entity_manager->flush();
@@ -140,13 +143,44 @@ class UsuarioController extends Controller
     }
 
     /**
+     * @Route("/rest/usuario/{id}",options={"expose"=true}, name="reestablecer_contrasena")
+     * @Method("POST")
+     * @param Request $request
+     * @param Usuario $usuario
+     *
+     * @return JsonResponse
+     */
+    public function reestablecer_contrasena(Request $request,Usuario $usuario,UserPasswordEncoderInterface $encoder){
+        $data = $request->getContent();
+        $data = json_decode($data,true);
+        $contrasena = mt_rand(100000,999999);
+        $usuario->setContrasena($encoder->encodePassword($usuario,$contrasena));
+
+        $entity_manager = $this->getDoctrine()->getManager();
+        $entity_manager->flush();
+
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizer = new ObjectNormalizer();
+        $normalizer->setCircularReferenceLimit(1);
+        // Add Circular reference handler
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+
+        $normalizers = array($normalizer);
+        $serializer = new Serializer($normalizers, $encoders);
+        $json =  $serializer->serialize(['contrasena'=>$contrasena],'json');
+        return new JsonResponse($json);
+    }
+
+    /**
      * @Route("/login", name="login")
      * @param Request $request
      * @param AuthenticationUtils $authenticationUtils
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function loginAction(Request $request,AuthenticationUtils $authenticationUtils) {
-        // get the login error if there is one
+        // Verificar si el usuario esta logueado y intenta entrar al login
         if($this->getUser()!=null){
             return $this->redirectToRoute('vista_home');
         }

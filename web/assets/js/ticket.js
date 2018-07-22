@@ -12,8 +12,7 @@ function cambiar_estado_ticket(ticket_id,estado){
         data: JSON.stringify({'estado':nuevo_estadp}) ,
         success:function(response){
             console.log(response);
-            $('.boton_iniciar_tarea').prop('disabled','disabled');
-            desplegar_notificacion('Tarea iniciada');
+            desplegar_notificacion('Tarea ' + estado);
         },
         error:function(err){
             console.log(err.responseText);
@@ -35,6 +34,7 @@ function agregar_nota(id,usuario,comentario){
         success:function(response){
             desplegar_notificacion('Nota agregada');
             $('.modal_agregar_nota').iziModal('close');
+            location.reload();
             console.log(response);
         },
         error:function(err){
