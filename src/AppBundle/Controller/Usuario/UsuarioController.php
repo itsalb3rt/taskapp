@@ -31,7 +31,9 @@ class UsuarioController extends Controller
     /**
      * @Route("/usuario", options={"expose"=true},name="lista_usuarios")
      */
-        public function indexUsuario(){
+        public function lista_usuarios(){
+            $usuario=new Usuario();
+            $form=$this->createForm(UsuarioType::class,$usuario);
 
             $usuarios = $this->getDoctrine()
                 ->getRepository(Usuario::class)
@@ -39,7 +41,8 @@ class UsuarioController extends Controller
             //Renderizando la vista
             return $this->render("@App/Usuario/lista_usuarios.html.twig",
                 [
-                    "usuarios"=>$usuarios
+                    "usuarios"=>$usuarios,
+                    'form'=>$form->createView()
                 ]
             );
         }
@@ -100,21 +103,20 @@ class UsuarioController extends Controller
         $data = json_decode($data,true);
 
         $usuario = new Usuario();
-
-
         $form = $this->createForm(UsuarioType::class,$usuario);
+        $form->handleRequest($request);
         $form->submit($data);
-                //cifrando clave
-                $passcifrado = $encoder->encodePassword($usuario,$usuario->getContrasena());
-                $usuario->setContrasena($passcifrado);
-                $entity_manager = $this->getDoctrine()->getManager();
-                $entity_manager->persist($usuario);
-                $entity_manager->flush();
 
-                $jsonContent = $this->get('serializer')->serialize($usuario,'json');
-                $jsonContent = json_decode($jsonContent,true);
+        $passcifrado = $encoder->encodePassword($usuario,$data['contrasena']);
+        $usuario->setContrasena($passcifrado);
+        $entity_manager = $this->getDoctrine()->getManager();
+        $entity_manager->persist($usuario);
+        $entity_manager->flush();
 
-                return new JsonResponse($jsonContent);
+        $jsonContent = $this->get('serializer')->serialize($usuario,'json');
+        $jsonContent = json_decode($jsonContent,true);
+
+        return new JsonResponse($jsonContent);
     }
 
     /**
@@ -181,6 +183,11 @@ class UsuarioController extends Controller
      */
     public function loginAction(Request $request,AuthenticationUtils $authenticationUtils) {
         // Verificar si el usuario esta logueado y intenta entrar al login
+
+        $usuario=new Usuario();
+        $form=$this->createForm(UsuarioType::class,$usuario);
+        $form->handleRequest($request);
+
         if($this->getUser()!=null){
             return $this->redirectToRoute('vista_home');
         }
@@ -193,7 +200,8 @@ class UsuarioController extends Controller
             '@App/Usuario/login.html.twig',
             [
                 'error'=>$error,
-                'last_username'=>$lastUsername
+                'last_username'=>$lastUsername,
+                'form'=>$form->createView()
             ]);
     }
 

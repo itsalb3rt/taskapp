@@ -41,34 +41,13 @@
             <span class="btn btn-success crear_usuario btn-lg btn-block"><span class="glyphicon glyphicon-edit"></span>&Tab;Registrarse</span>
         </div>
     <div class="modal_crear_usuario centrar_contenido formulario">
-        <form action="#" method="POST" class="formulario_crear_usuario">
-            <div class="input">
-                <label for="nombre">Nombre completo <span class="text-muted"><small>(Obligatorio)</small></span></label>
-                <input type="text" name="nombre" class="nombre" id="nombre" placeholder="Albert Eduardo Hidalgo Taveras" autocomplete="off" required>
-            </div>
-            <div class="input">
-                <label for="email">Email <span class="text-muted"><small>(Obligatorio)</small></span></label></label>
-                <input type="email" name="username" class="email" id="email" placeholder="alhidalgo@edenorte.com.do" autocomplete="off" required>
-            </div>
-            <div class="input">
-                <label for="contrasena">Contraseña <span class="text-muted"><small>(Obligatorio)</small></span></label></label>
-                <input type="password" name="contrasena" class="contrasena" id="contrasena" placeholder="**********" autocomplete="off" required>
-                <label for="contrasena2">Repita contraseña <span class="text-muted"><small>(Obligatorio)</small></span></label></label>
-                <input type="password" name="contrasena2" class="contrasena2" id="contrasena2" placeholder="**********" autocomplete="off" required>
-            </div>
-            <div class="info_contrasena"></div>
-            <div class="input" style="text-align: left; display: inline-block;">
-                <div><label>Tipo de Usuario</label></div>
-                <input type="radio" name="tipo_usuario" value="ROLE_USER" class="tipo_usuario" id="tipo_normal" checked>
-                <label for="tipo_normal">NORMAL</label>
-                <input type="radio" name="tipo_usuario" value="ROLE_ADMIN" class="tipo_usuario" id="tipo_tecnico">
-                <label for="tipo_tecnico">TECNICO</label>
-            </div>
-
-            <div class="input">
-                <input type="submit" name="crear_usuario" class="submit_crear_usuario btn btn-primary" value="Crear Usuario" disabled>
-            </div>
-        </form>
+        {{ form_start(form,{ 'attr':{'class':'formulario_crear_usuario'}}) }}
+        {{ form_widget(form) }}
+        <div class="info_contrasena"></div>
+        <div class="input">
+            <input type="submit" name="crear_usuario" class="submit_crear_usuario btn btn-primary" value="Crear Usuario" disabled>
+        </div>
+        {{ form_end(form) }}
     </div>
     <script>
         //Validar contrasena
@@ -91,9 +70,9 @@
         function crear_usuario(){
 
             var nombre = $('.nombre').val();
-            var email = $('.email').val();
+            var email = $('.username').val();
             var contrasena = $('.contrasena').val();
-            var tipo_usuario = $('input[name="tipo_usuario"]:checked').val();
+            var tipo_usuario = $('.tipo_usuario input[type="radio"]:checked').val();
 
             $.ajax({
                 url:Routing.generate('guardar_usuario'),

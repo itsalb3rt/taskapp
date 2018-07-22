@@ -20,9 +20,9 @@
      border-radius: 4px;
      border: 1px solid grey;
  }
- .formulario .input {
+ .formulario_crear_usuario div > div {
      margin: 10px auto;
-     display: grid;
+     display: list-item;
  }
  .centrar_contenido{
      margin: auto;
