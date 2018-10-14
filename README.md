@@ -1,9 +1,8 @@
-TaskApp
+# TaskApp
 
-=======
-# Aplicacion de asignacion de tareas usando Symfony 3.
+## Aplicacion de asignacion de tareas usando Symfony 3.
 ---
-## Info;
+### Info;
 
 Un sistema de asignación de tareas en el cual puedes crear `Tickets` para un grupo de usuarios destinados a resolver estos `Tickets`. Se puede mantener una comunicación entre ambas partes ya que el sistema contiene un área de comentarios dentro de cada tarea.
 
