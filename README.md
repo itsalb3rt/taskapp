@@ -9,8 +9,15 @@ Un sistema de asignación de tareas en el cual puedes crear `Tickets` para un gr
 Los usuarios que solicitan `Tickets` puedes ver el seguimiento de estos y saber el estado en el que están ya que posee un mecanismo para el cambio de estado en los `Tickets`.
 
 
-> De no tener conocimientos previos sobre el proceso de pasar una app a producción en symfony puedes consultar el siguiente vídeo  
-* https://www.udemy.com/symfony-3-en-produccion-subir-y-publicar-proyectos-web/
+> Debes tener instalado Composer para ejecutar los siguientes comandos y así descargar e instalar la aplicación TaskApp:
+
+    # clona el código de la aplicación
+    $ cd proyectos/
+    $ git clone https://github.com/itsalb3rt/taskapp.git
+    
+    # instala las dependencias del proyecto (incluyendo Symfony)
+    $ cd TaskApp/
+    $ composer install
 
 
 ---
