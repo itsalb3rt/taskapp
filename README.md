@@ -8,6 +8,7 @@ Un sistema de asignación de tareas en el cual puedes crear `Tickets` para un gr
 
 Los usuarios que solicitan `Tickets` puedes ver el seguimiento de estos y saber el estado en el que están ya que posee un mecanismo para el cambio de estado en los `Tickets`.
 
+### Instalación
 
 > Debes tener instalado Composer para ejecutar los siguientes comandos y así descargar e instalar la aplicación TaskApp:
 
